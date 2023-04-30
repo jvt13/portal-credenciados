@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrato</title>
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Lato', sans-serif;
+    }
+
+    .container-contrato {
+        margin: 0 auto;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .container-contrato .center {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        font-size: 12px;
+        background-color: #fff;
+    }
+
+    .container-contrato .center h2 {
+        text-align: center;
+        padding: 10px;
+    }
+
+    .container-contrato .inf-cad-cred {
+        margin-top: 10px;
+    }
+
+    .container-contrato .inf-cad-cred td {
+        min-width: 30px;
+        max-width: 155px;
+    }
+
+    .container-contrato .part1 {
+        padding: 10px;
+    }
+
+    .container-contrato .part2 {
+        padding: 10px;
+    }
+
+    .container-contrato .part2 {
+        margin: 0 auto;
+        position: relative;
+        width: 100%;
+        border: 1px solid #000;
+        text-align: center;
+    }
+
+    .container-contrato .part2 p {
+        position: relative;
+        text-align: left;
+    }
+
+    .container-contrato .part2 .op-tipo {
+        position: relative;
+        text-align: left;
+        margin-left: 50px;
+    }
+</style>
+
+<body>
+    <div class="container-contrato">
+        <div class="center">
+            <div class="titulo">
+                <h2>OBJETO DO CONTRATO DE <%= credenciado.tipo_credencial %> LOJISTA</h2>
+            </div>
+            <hr>
+            <div class="inf-cad-cred">
+                <table border="1" cellpadding='0' cellspacing='0'>
+                    <tr>
+                        <td>NÚMERO DA CREDENCIAL:</td>
+                        <td>63</td>
+                    </tr>
+                    <tr>
+                        <td>CÓDIGO SEGAUTO:</td>
+                        <td>336654</td>
+                    </tr>
+                </table>
+            </div><br>
+            <hr>
+            <div class="part1">
+                <p>&nbsp;&nbsp;&nbsp; Pelo presente instrumento particular, de um lado, o ANCAR CENTRO OESTE
+                    ESTACIONAMENTO LTDA, inscrito no CNPJ/MF sob n°22.331.808/0001-94, com sede na Avenida Historiador
+                    Rubens de Mendonça, n°.3.300, Bairro Jardim Aclimação, na cidade de Cuiabá/MT, neste ato por seus
+                    representantes legais, doravante denominado simplesmente CONTRATADA
+                    e de outro lado (a) <%= credenciado.nome %> CPF: <%= credenciado.cpf %>, residente <%=
+                                credenciado.rua %>, N <%= credenciado.numero %>, <%= credenciado.complemento %>, BAIRRO:
+                                        <%= credenciado.bairro %> na cidade de <%= credenciado.cidade %>
+                                                - <%= credenciado.uf %>, doravante denominado simplesmente CONTRATANTE,
+                                                    ambos neste ato legalmente representadas, têm entre si certo e
+                                                    ajustado o que segue:</p>
+            </div><br>
+
+            <div class="part2">
+                <span>1.OBJETO</span><br><br>
+                <p>
+                    1.1. O Presente contrato tem por objetivo adquirir a credencial do Pantanal Shopping, que autoriza a
+                    entrada e saída de automóveis ao mensalista acima qualificado como CONTRATANTE no estacionamento da
+                    CONTRATADA no período:
+                </p>
+
+                <br>
+                <div class="op-tipo">
+                    1° Opção<br>
+                    Integral Carro (x)<br>
+                    Valor <%= targ_valor %> -> das 06:00 as 23:59 de segunda a segunda.
+                </div>
+            </div>
+
+            <div></div>
+        </div>
+    </div>
+</body>
+
+</html>

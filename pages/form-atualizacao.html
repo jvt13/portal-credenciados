@@ -1,0 +1,292 @@
+<%- include('./partials/header.html') %>
+
+    <script language=javascript type="text/javascript">
+        let cep = require('cep-promise');
+        const func = require('../funcao.js');
+
+        function buscaCEP() {
+            var cep = document.getElementById('end_cep').value;
+            cep = cep.replace("-", "");
+            var url = 'https://viacep.com.br/ws/' + cep + '/json/';
+            var request = new XMLHttpRequest();
+
+            request.open('GET', url);
+            request.onerror = function (e) {
+                document.getElementById('return').innerHTML = 'API OFFLINE OU CEP INVALIDO.';
+            }
+
+            request.onload = () => {
+                var response = JSON.parse(request.responseText);
+
+                if (response.erro == true) {
+                    document.getElementById('return').innerHTML = 'CEP NÃO ENCONTRADO.';
+                } else {
+                    document.getElementById('end_rua').value = response.logradouro;
+                    document.getElementById('end_bairro').value = response.bairro;
+                    document.getElementById('end_complemento').value = response.complemento;
+                    document.getElementById('end_cidade').value = response.localidade;
+                    document.getElementById('end_uf').value = response.uf;
+                }
+            }
+            request.send();
+        }
+
+        function verificaDigitos() {
+            var cep = document.getElementById('end_cep').value;
+            if (cep.length >= 8) {
+                buscaCEP();
+            }
+        }
+
+        function trataCheck(op) {
+            let cx_carro = document.getElementById("cx_135");
+            let cx_moto = document.getElementById("cx_50");
+
+            if (op == "carro" & cx_carro.checked) {
+                cx_moto.checked = false;
+                document.getElementById("tipo_cred").value = "Carro";
+            } else if (op == "carro") {
+                document.getElementById("tipo_cred").value = "";
+            }
+
+            if (op == "moto" & cx_moto.checked) {
+                cx_carro.checked = false;
+                document.getElementById("tipo_cred").value = "Moto";
+            } else if (op == "moto") {
+                document.getElementById("tipo_cred").value = "";
+            }
+        }
+
+        function trataSelectTipo() {
+            let tipo = document.getElementById("select_tipo_cred").value;
+            //alert("Tipo:"+tipo);
+
+            if (tipo == "Lojista") {
+                window.location.href = "/cadastro-mensalista/Mensalista";
+            }
+            if (tipo == "Aluno Unic") {
+                window.location.href = "/cadastro-mensalista/Unic";
+            }
+
+            if (tipo == "") {
+                window.location.href = "/cadastro-mensalista";
+            }
+        }
+
+        function phoneMask(event) {
+            let input = event.target;
+            input.value = maskPhone(input.value);
+        }
+
+        function maskPhone(value) {
+            if (!value) return "";
+            value = value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d)/, "($1) $2");
+            value = value.replace(/(\d)(\d{4})$/, "$1-$2");
+            return value;
+        }
+
+        document.getElementById("dados-assinatura-solicitante").value = "";
+        document.getElementById("dados-assinatura-prop-gerente").value = "";
+
+        function validaForm(event) {
+            var dados1 = document.getElementById("dados-assinatura-solicitante").value;
+            var dados2 = document.getElementById("dados-assinatura-prop-gerente").value;
+
+            if (dados1 != "" & dados2 != "") {
+                return true;
+            } else {
+                alert("Falta assinatura.");
+                event.preventDefault();
+            }
+            //return false;
+        }
+    </script>
+
+    <body>
+
+        <div id="dv-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Assinatura</h1>
+                </div>
+                <br>
+
+                <div class="modal-body">
+                    <div class="container-assinatura">
+                        <div class="body-signature"><canvas id="signature-pad" class="signature-pad" width="600px"
+                                height="80px"></canvas></div><br><br>
+                        <button id="save" class="btn-save">Salvar</button>
+                        <button id="clear" class="btn-clear">Limpar</button>
+                        <input type="button" class="btn-cancelar" value="Cancelar" onclick="closeModal('dv-modal')" />
+                    </div>
+                </div>
+                <br>
+                <br>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+
+        <form class="formulario" method="post" action="/cadastro-mensalista/" onsubmit="validaForm(event);">
+            <table border="0" class="tabela01" cellpadding='0' cellspacing='0'>
+                <tr>
+                    <th colspan="3">
+                        <h2>FICHA CADASTRAL DE CREDENCIAL DE ESTACIONAMENTO</h2>
+                    </th>
+                </tr>
+
+                <tr>
+                    <td colspan="3">Nome da loja:
+                        <select name="select_loja" class="selection_loja" required>
+                            <option></option>
+                            <% for(let i=0; i < list_lojas.length; i++){ %>
+
+                                <% if(list_lojas[i].nome == dados.loja){ %>
+                                    <option selected>
+                                        <%= list_lojas[i].nome %>
+                                    </option>
+                                
+                                <% }else{ %>
+                                    <option>
+                                        <%= list_lojas[i].nome %>
+                                    </option>
+                                <% }} %>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th colspan="3" class="grupo">Dados do condutor</th>
+                </tr>
+
+                <tr>
+                    <td colspan="3">Nome:<input type="text" name="nome" value="<%= dados.nome %>" placeholder="digite o seu nome" required /></td>
+                </tr>
+
+                <tr>
+                    <td>RG:</div> <input type="text" name="rg" value="<%= dados.rg %>" placeholder="digite o RG" required /></td>
+                    <td>Orgão emissor: <input type="text" name="org_emissor" value="<%= dados.org_emissor %>" placeholder="digite o Orgão emissor" />
+                    </td>
+                    <td>CPF: <input type="text" name="cpf" placeholder="digite o CPF"
+                            value="<%= global.inf_cred[0].cpf %>" required />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Telefone:&nbsp;</br><input type="tel" name="tel" value="<%= dados.tel %>" placeholder="digite o telefone fixo."
+                            maxlength="15" onkeyup="phoneMask(event)" /></td>
+                    <td>Celular:&nbsp;<input type="text" name="cel" value="<%= dados.cel %>" placeholder="digite o telefone celular."
+                            maxlength="15" onkeyup="phoneMask(event)" required /></td>
+                    <td>Ocupação:&nbsp;<input type="text" name="ocupacao" value="<%= dados.ocupacao %>" placeholder="digite sua ocupação." /></td>
+                </tr>
+
+                <tr>
+                    <th colspan="3" class="grupo">Endereço</th>
+                </tr>
+                <tr>
+                    <td>CEP:&nbsp;<input type="text" id="end_cep" maxlength="9" onkeyup="verificaDigitos(event)" value="<%= dados.cep %>"
+                            placeholder="digitar o cep para a busca" required /></td>
+                    <td>
+                        Bairro: <input type="text" id="end_bairro" name="end_bairro" value="<%= dados.bairro %>" placeholder="digite o Bairro"
+                            required />
+                    </td>
+                    <td>Cidade: <input type="text" id="end_cidade" name="end_cidade" value="<%= dados.cidade %>" placeholder="digite a Cidade"
+                            required />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>UF: <input type="text" id="end_uf" name="end_uf" value="<%= dados.uf %>" placeholder="digite o Estado ex:(MT)"
+                            required />
+                    </td>
+                    <td>Av/Rua: <input type="text" name="end_rua" id="end_rua" value="<%= dados.rua %>" placeholder="digite a rua" required />
+                    </td>
+                    <td>Nº: <input type="text" id="end_numero" name="end_numero" value="<%= dados.numero %>" placeholder="digite o número"
+                            required />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Complemento: <input type="text" id="end_complemento" name="end_complemento" value="<%= dados.complemento %>"
+                            placeholder="digite o complemento" required />
+                    </td>
+                    <td>&nbsp;
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+
+                <tr>
+                    <th colspan="3" class="grupo">Dados do veículo</th>
+                </tr>
+
+                <tr>
+                    <td>Placa do veículo:<input type="text" name="placa" value="<%= dados.veic_placa %>" placeholder="digite a placa do veículo"
+                            required />
+                    </td>
+                    <td>Marca:&nbsp;<input type="text" name="marca" value="<%= dados.veic_marca %>" placeholder="digite a marca do veículo" required />
+                    </td>
+                    <td>Modelo:&nbsp;<input type="text" name="modelo" value="<%= dados.veic_modelo %>" placeholder="digite o modelo do veículo"
+                            required />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Cor:&nbsp;<input type="text" name="cor" value="<%= dados.veic_ano %>" placeholder="digite a cor do veículo" required /></td>
+                    <td>Ano:&nbsp;<input type="text" name="ano" value="<%= dados.veic_ano %>" placeholder="digite o ano do veículo" required />
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+
+            </table>
+            <br>
+
+            <table border="0" class="tab_assinaturas" cellpadding='0' cellspacing='0'>
+
+                <tr>
+                    <td><img id="assinatura-solicitante" /><input type="text" id="dados-assinatura-solicitante"
+                            class="txt-dados-assinatura" name="assinatura1" style="display: none;" /></td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td><img id="assinatura-prop-gerente" /><input type="text" id="dados-assinatura-prop-gerente"
+                            class="txt-dados-assinatura" name="assinatura2" style="display: none;" /></td>
+                </tr>
+                <tr>
+                    <td class="td_ass" style="font-size: 12px;">
+                        <div class="label">Solicitante &nbsp;<input id="btn-assi-solicitante" type="button"
+                                value="Assinar"
+                                onclick="openModal('dv-modal','assinatura-solicitante', 'dados-assinatura-solicitante')" />
+                        </div>
+                    </td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td class="td_ass" style="font-size: 12px;">
+                        <div class="label">Proprietário/Gerente &nbsp;<input id="btn-assi-prop-gerente" type="button"
+                                value="Assinar"
+                                onclick="openModal('dv-modal','assinatura-prop-gerente', 'dados-assinatura-prop-gerente')" />
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+
+            <div id="container-upload">
+                <!--<img src="" id="img1" width="150" height="150" style="display: none;" />
+                <input type="file" id="file-upload" name="file1" onchange="return checkFile(event)"
+                    onclick="return eventoBusca()" accept="image/png, image/jpg, image/jpeg, application/pdf" /><br><br>
+
+                <input type="text" id="img-1" name="img_1" style="display: none;" />&nbsp;
+                <input type="text" id="txt_img_1" disabled /><input type="button" value="X"
+                    onclick="apagarArquivo('img-1', 'txt_img_1')" /><br><br>-->
+                <%- include('./partials/container-upload.html') %>
+            </div>
+
+            <input type="submit" class="btn_solicitar" name="acao" value="Solicitar" />
+        </form>
+
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@3.0.0-beta.3/dist/signature_pad.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8=" crossorigin="anonymous"></script>
+    <script src="../public/script-modal.js"></script>
+
+    </html>

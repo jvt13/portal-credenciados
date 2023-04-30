@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assinatura</title>
+
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Lato', sans-serif;
+    }
+
+    /*.container {
+    margin: 0 auto;
+    max-width: 900px;
+    height: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #eee;
+}*/
+
+    .modal {
+        background-color: rgb(0, 0, 0, .8);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+    }
+
+    .modal .modal-content {
+        margin: 0 auto;
+        position: relative;
+        width: 70%;
+        height: 300px;
+        padding: 10px;
+        background-color: #eee;
+        border: 1px solid blue;
+    }
+
+    .modal .modal-header {
+        background-color: rgb(10, 172, 220);
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal .modal-header h1 {
+        font-weight: bold;
+        text-align: center;
+        font-size: 22px;
+        color: #fff;
+    }
+
+    .modal .modal-content .modal-body {
+        margin: 0 auto;
+        position: relative;
+        width: 100%;
+        height: 80%;
+        /*border: 1px solid red;*/
+    }
+
+    /*Assinatura*/
+    .modal .modal-content .container-assinatura {
+        margin: 0 auto;
+        position: relative;
+        /*width: 405px;
+    height: 120px;*/
+        width: 80%;
+        height: 80%;
+        border: 1px solid aqua;
+    }
+
+    .modal .modal-content .container-assinatura canvas {
+        border: 1px solid black;
+    }
+
+    .modal .container-canvas {
+        position: relative;
+        left: 100px;
+        border: 1px solid blue;
+    }
+
+    .modal canvas {
+        margin: 0 auto;
+        position: relative;
+        background-color: rgb(255, 255, 255);
+        /*border: 1px solid black;*/
+    }
+
+    .modal .modal-footer {
+        /*background-color: #ccc;*/
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 30px;
+    }
+
+    .modal .modal-footer button {
+        background-color: rgb(10, 172, 220);
+        width: 100px;
+        height: 0 auto;
+        font-size: 12px;
+        padding: 5px;
+        margin-left: 10px;
+        border: 2px solid rgb(10, 172, 220);
+        border-radius: 5px;
+        cursor: pointer;
+        transform: bacground .3s;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .modal .modal-footer button:first-child{
+        margin-left: 0;
+    }
+    
+
+    .modal .modal-footer button:hover {
+        background-color: rgb(10, 172, 220);
+        color: #000;
+    }
+
+    .modal .modal-footer button:active {
+        background-color: rgb(33, 156, 70);
+        color: #fff;
+    }
+
+    .dados-assinatura {
+        width: 100%;
+    }
+
+    @media screen and (max-width: 768px) {
+        .modal .modal-header h1 {
+            font-size: 2rem;
+        }
+
+        .modal .modal-footer button{
+            font-size: 1rem;
+        }
+    }
+
+    @media screen and (min-width: 769px) {
+        .modal .modal-header h1 {
+        }
+    }
+</style>
+
+<body>
+
+    <div id="modal-ass" class="modal">
+        <div id="modal-header" class="modal-header">
+            <h1>ASSINATURA</h1>
+        </div>
+        <br>
+        <canvas id="canvas"></canvas>
+        <input type="text" id="dados-assinatura" class="dados-assinatura" style="display: none;" /><br><br>
+        <div class="modal-footer">
+            <button id="save" class="btn-save">SALVAR</button>
+            <button id="clear" class="btn-clear">LIMPAR</button>
+            <button id="btn-cancelar" class="btn-cancelar"
+                onclick="closeModal('modal-ass','container-home')">CANCELAR</button>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    var canvas = document.getElementById("canvas");
+    var saveButton = document.getElementById('save');
+    var clearButton = document.getElementById('clear');
+
+    saveButton.addEventListener("click", function (event) {
+        if (!Drawing) {
+            alert("Faça sua assinatura.");
+        } else {
+            var dataURL = canvas.toDataURL();
+            document.getElementById('dados-assinatura').value = [dataURL];
+            sendPost(id_objeto);// function e variavel da pagina inicial.
+            clear();
+            closeModal('modal-ass', 'container-home');
+        }
+    });
+
+    clearButton.addEventListener('click', function (event) {
+        clear();
+        Drawing = false;
+    });
+
+    function clear() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('dados-assinatura').value = "";
+    }
+
+    function canvasVazio() {
+        // Obtém o contexto do canvas
+        ctx = canvas.getContext("2d");
+
+        // Obtém os dados-assinatura de pixel do canvas
+        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var data = imageData.data;
+        alert("REc:" + data.length);
+
+        // Percorre todos os pixels do canvas e verifica se eles são brancos
+        for (var i = 0; i < data.length; i += 4) {
+            console.log(data[i + 2])
+            if (data[i] !== 255 || data[i + 1] !== 255 || data[i + 2] !== 255) {
+                // Se um pixel não for branco, o canvas não está vazio
+                return false;
+            }
+        }
+
+        // Se todos os pixels forem brancos, o canvas está vazio
+        return true;
+    }
+</script>
+
+<script>
+
+    function rodarTela() {
+        //seleciona a tag body
+        var body = document.getElementsByTagName("body")[0];
+
+        //define a largura e altura da tag body para paisagem
+        body.style.width = "100vh";
+        body.style.height = "100vw";
+
+        //rotação de 90 graus da página em paisagem
+        body.style.transform = "rotate(90deg)";
+    }
+</script>
+
+<script>//Script do canvas para poder desenhar na tela.
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+
+    var isDrawing = false;
+    var lastX = 0;
+    var lastY = 0;
+    var Drawing = false;
+
+    function draw(e) {
+        if (!isDrawing) return;
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+
+        Drawing = true;
+    }
+
+    canvas.addEventListener("mousedown", (e) => {
+        isDrawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+    });
+
+    canvas.addEventListener("mousemove", draw);
+
+    canvas.addEventListener("mouseup", () => {
+        isDrawing = false;
+    });
+
+    canvas.addEventListener("mouseout", () => {
+        isDrawing = false;
+    });
+
+    canvas.addEventListener('touchstart', (e) => {
+        isDrawing = true;
+        lastX = e.touches[0].clientX - canvas.offsetLeft;
+        lastY = e.touches[0].clientY - canvas.offsetTop;
+        //alert("Fim")
+    });
+
+
+    canvas.addEventListener('touchmove', (e) => {
+        //alert("Touc")
+        if (isDrawing) {
+            const currentX = e.touches[0].clientX - canvas.offsetLeft;
+            const currentY = e.touches[0].clientY - canvas.offsetTop;
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
+            ctx.stroke();
+
+            lastX = currentX;
+            lastY = currentY;
+
+            Drawing = true;
+
+            // Use requestAnimationFrame para controlar a frequência de atualização
+            requestAnimationFrame(() => {
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+
+                lastX = currentX;
+                lastY = currentY;
+            });
+        }
+    });
+
+    canvas.addEventListener('touchend', () => {
+        isDrawing = false;
+    });
+
+
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    var modal_header = document.getElementById('modal-header');
+
+    window.addEventListener("orientationchange", function () {
+        if (isMobile) {
+
+            if (Math.abs(window.orientation) === 90) {//modo paisagem
+                modal_header.style.marginTop = '0';
+                var rec = (window.innerHeight * 5) / 100;
+                var calc = (window.innerHeight * 5) / 100;
+                canvas.style.left = calc + "px";
+                canvas.width = window.innerHeight - (calc / 2);
+                var calc = (window.screen.width * 38) / 100;
+                canvas.height = window.screen.width - (calc * 2);
+            } else if (window.orientation === 0) {//modo retrato
+                modal_header.style.marginTop = '30%';
+                var calc = (window.screen.width * 5) / 100;
+                canvas.style.left = calc + "px";
+                canvas.width = window.screen.width - (calc * 2);
+                canvas.height = 150;
+            }
+        }
+    });
+
+    window.onload = function () {
+        if (isMobile) {//Verifica se é dispositivo celular ou tablet.
+            var calc = (window.screen.width * 5) / 100;
+            canvas.style.left = calc + "px";
+            canvas.width = window.screen.width - (calc * 2);
+
+            if (window.orientation === undefined) {
+
+            } else if (Math.abs(window.orientation) === 90) {//modo paisagem
+                modal_header.style.marginTop = '0';
+                var calc = (window.screen.width * 5) / 100;
+                canvas.style.left = calc + "px";
+                canvas.width = window.screen.width - (calc * 2) - 50;
+                var calc = (window.screen.width * 38) / 100;
+                canvas.height = window.screen.width - (calc * 2);
+            } else if (window.orientation === 0) {//modo retrato
+                //alert("Para facilidar na assinatura, ative a rotação da tela e vire o dispositivo na horizontal.")
+                modal_header.style.marginTop = '30%';
+            }
+        } else {
+            modal_header.style.marginTop = '0';
+            var calc = (window.screen.width * 5) / 100;
+            canvas.style.left = calc + "px";
+            canvas.width = window.screen.width;
+
+        }
+    }
+
+
+    var mediaQuery = window.matchMedia("(max-width: 1000px)");
+
+    if (mediaQuery.matches) {
+        //alert("fdsfs")
+        //canvas.width = window.screen.width - 100;
+        //canvas.height = 150;
+    }
+
+    mediaQuery = window.matchMedia("(max-width: 3000px)");
+
+    if (mediaQuery.matches) {
+        //alert("fdsfs")
+        canvas.width = window.screen.width - 100;
+        /*canvas.width = 600;
+        canvas.height = 150;*/
+    }
+</script>
+
+</html>

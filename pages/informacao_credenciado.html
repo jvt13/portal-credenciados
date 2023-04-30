@@ -1,0 +1,387 @@
+<%- include('./partials/header.html') %>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2686761709570090"
+        crossorigin="anonymous"></script>
+
+    <div class="container-informacao">
+        <div class="center">
+            <% if(status=="Y" ){ %>
+                <div class="box1">
+                    <h3>&nbsp;&nbsp;Já existe um cadastro de credencial com o nome de <%= inf_cred[0].nome %>,
+                            do tipo <%= inf_cred[0].tipo_credencial %>, da loja
+                                <%= inf_cred[0].loja %>,&nbsp solicitado no dia <%= inf_cred[0].dta_solicitacao %>, as
+                                        <%= inf_cred[0].hora_solicitacao %>
+                    </h3><br />
+
+                    <div id="inf-2via" class="inf-2via">Solicitando a 2º via da credencial de <%= plano %>,
+                            irá gerar um custo de
+                            <%= valor_cred %>,00.
+                            <br><button onclick="openModal('modal-2via')">2º VIA</button>
+                    </div>
+                    
+                    <div id="inf-atualizacao" class="inf-atualizacao">
+                        Se caso trocou alguma informação do cadastro como loja, contato telefônico ou veiculo,
+                        por gentileza realizar a atualização cadastral.
+                        <br><button onclick="getFormAtualizacao()">ATUALIZAÇÃO</button>
+                    </div>
+                    
+                        <% if(inf_cred[0].status2 == ""){ %>
+                            <div id="inf-pausa" class="inf-pausa">
+                            &nbsp;&nbsp;O Credenciado poderá solicitar a pausa da credencial, quando ocorrer de entrar de férias ou entrar de licença da empresa.<br><br>
+                        &nbsp;&nbsp;A pausa pode ser solicitada a qualquer momento, o aconselhavel é solicitar assim que a mensalidade vencer, ou seja dia 10 ou dia 20, pois se já tiver pago a mensalidade
+                         e solicitar a pausa, o restante dos dias té o proximo vencimento, não poderá ser usado novamente, devido a credencial ficar inativa.
+                        <!--Essa opção é para solicitar a pausa da credencial, para que não haja crobrança. (Lembrando que ela ficara inativa para o uso).<br><br>
+                        Quando usar a pausa da credencial?<br>
+                        &nbsp;&nbsp; Quando for entrar de férias ou entrar de licença da empresa.<br><br>
+                        Em qual momento eu poço solicitar a pausa?<br>
+                        &nbsp;&nbsp;A pausa pode ser solicitada a qualquer momento, o aconselhavel é solicitar assim que a mensalidade vencer, ou seja dia 10 ou dia 20, pois se já tiver pago a mensalidade
+                         e solicitar a pausa, o restante dos dias té o proximo vencimento, não poderá ser usado novamente, devido a credencial ficar inativa.-->
+                         <br><button onclick="getFormCancelamento('p')">PAUSAR</button></div>
+                        <% } if(inf_cred[0].status2 == "PAUSA"){ %>
+                            <div id="inf-pausa" class="inf-pausa">
+                            &nbsp;&nbsp;O Credenciado poderá solicitar a pausa da credencial, quando ocorrer de entrar de férias ou entrar de licença da empresa.<br><br>
+                        &nbsp;&nbsp;A pausa pode ser solicitada a qualquer momento, o aconselhavel é solicitar assim que a mensalidade vencer, ou seja dia 10 ou dia 20, pois se já tiver pago a mensalidade
+                         e solicitar a pausa, o restante dos dias té o proximo vencimento, não poderá ser usado novamente, devido a credencial ficar inativa.
+                        <!--Essa opção é para solicitar a pausa da credencial, para que não haja crobrança. (Lembrando que ela ficara inativa para o uso).<br><br>
+                        Quando usar a pausa da credencial?<br>
+                        &nbsp;&nbsp; Quando for entrar de férias ou entrar de licença da empresa.<br><br>
+                        Em qual momento eu poço solicitar a pausa?<br>
+                        &nbsp;&nbsp;A pausa pode ser solicitada a qualquer momento, o aconselhavel é solicitar assim que a mensalidade vencer, ou seja dia 10 ou dia 20, pois se já tiver pago a mensalidade
+                         e solicitar a pausa, o restante dos dias té o proximo vencimento, não poderá ser usado novamente, devido a credencial ficar inativa.-->
+                         <br><button onclick="getFormCancelamento('a')">ATIVAR</button></div>
+                        <% } %>
+
+                    <!--<p>&nbsp;&nbsp;Não trabalha mais nessa loja e deseja solicitar o cancelamento dessa credencial?</br>
+                        Para
+                        isso, o titular dos dados, tem que comparecer até a Central do Estacionamento,
+                        portando documento pessoal com foto (RG e CPF ou CNH).
+                    </p></br>
+                    <p>&nbsp;&nbsp; Se já preferir, solicitar uma nova credencial, clique no botão de incluir abaixo,
+                        para preencher o formulário e anexar os documentos.
+                        Lembrando que a credencial, só será entregue se a outra credencial for cancelada pelo portador.
+                    </p>-->
+                </div>
+
+                <div class="box_button">
+                    <!--<input class="btn_incluir" type="button" onclick="openModal('dv-modal')" value="Incluir" />-->
+                    <button onclick="voltarPagina()">VOLTAR</button>
+                </div>
+
+                <% }else{ %>
+                    <div class="box1">
+                        <div class="inf-busca">Não existe cadastro com o dado informado: <%= inf_cred[0].cpf %>. <br> Deseja
+                                realizar um
+                                cadastro com
+                                os
+                                dados inseridos?</div>
+                        <div class="box_button">
+                            <button onclick="openModal('modal-informacao')">SIM</button>
+                            <button onclick="voltarPagina()">Não</button>
+                        </div>
+                        <%} %>
+                            </br>
+
+                    </div>
+        </div>
+    </div>
+
+    <% if(status == "Y"){ %>
+        <div id="modal-2via" class="modal-2via">
+            <div class="content">
+                <div class="header">
+                    <h1>2º DE VIA CREDENCIAL </h1>
+                </div>
+                <div class="body">
+                    <%- msg.msg %>
+                        &nbsp;&nbsp;Lembrando que deverá ser pago o valor de R$<%= valor_cred %>,00 referente a segunda via
+                            e assinar o termo de segunda via, no ato da retirada.<br><br>
+                            &nbsp;&nbsp;Se o credenciado quiser ter acesso ao termo após a retirada da credencial, o mesmo
+                            poderá baixar, nesse portal mesmo, ao consultar o seu CPF ou CNPJ.
+                </div>
+    
+                <div class="footer">
+                    <form method="post" action="/solicitacao/segundavia" >
+                        <input type="submit" value="SALVAR" />
+                        <input type="button" onclick="closeModal('modal-2via')" value="CANCELAR" />
+    
+                    </form>
+                    <!--<button id="btn-save" class="btn-save">SALVAR</button>
+                    <button id="btn-cancelar" class="btn-cancelar">CANCELAR</button>-->
+                </div>
+            </div>
+        </div>
+    <% } %>
+
+
+    <div id="modal-informacao" class="modal-informacao">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>TIPO DE CREDENCIAL</h1>
+            </div>
+            <div class="modal-body">
+                <select id="tipo" name="select_tipo_cred_busca">
+                    <option></option>
+                    <option>Autorizada</option>
+                    <option>Mensalista</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn-save" class="btn-save">SALVAR</button>
+                <button id="btn-cancelar" class="btn-cancelar">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+    </body>
+
+    <!--Style modal 2º via-->
+    <style>
+        .modal-2via {
+            background-color: rgb(0, 0, 0, .8);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            flex-wrap: wrap;
+            /*um dos passos para deixar responsivo*/
+        }
+
+        .modal-2via .content {
+            margin: 0 auto;
+            position: relative;
+            max-width: 70%;
+            height: 300px;
+            margin-top: 5%;
+            padding: 0.5%;
+            background-color: #eee;
+            border: 1px solid rgb(95, 93, 93);
+            border-radius: 10px 10px 10px 10px;
+        }
+
+        .modal-2via .content .header {
+            position: relative;
+            background-color: rgb(10, 172, 220);
+            width: 100%;
+            max-height: 30px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .modal-2via .header h1 {
+            padding: 1% 10px;
+        }
+
+        .modal-2via .content .body {
+            border: 0px solid #000;
+            position: relative;
+            width: 100%;
+            min-height: 80%;
+            padding: 10px 5px;
+        }
+
+        .modal-2via .content .footer {
+            position: relative;
+            border: 0px solid #000;
+            width: 100%;
+            max-height: 35px;
+            padding: 1px 0px;
+        }
+
+        .modal-2via .footer input {
+            position: relative;
+            background-color: rgb(10, 172, 220);
+            width: 110px;
+            height: 0 auto;
+            left: 1%;
+            font-size: 12px;
+            padding: 5px;
+            margin-top: -2px;
+            border: 2px solid rgb(10, 172, 220);
+            border-radius: 5px;
+            cursor: pointer;
+            transform: bacground .3s;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .modal-2via .footer input:hover {
+            background-color: rgb(10, 172, 220);
+            color: #000;
+        }
+
+        .modal-2via .footer input:active {
+            background-color: rgb(33, 156, 70);
+            color: #fff;
+        }
+    </style>
+
+    <!--Style modal informação-->
+    <style>
+        .modal-informacao {
+            background-color: rgb(0, 0, 0, .8);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            flex-wrap: wrap;
+            /*um dos passos para deixar responsivo*/
+        }
+
+        .modal-informacao .modal-content {
+            margin: 0 auto;
+            position: relative;
+            width: 50%;
+            height: 200px;
+            margin-top: 5%;
+            padding: 0.5%;
+            background-color: #eee;
+            border: 1px solid rgb(95, 93, 93);
+            border-radius: 10px 10px 10px 10px;
+        }
+
+        .modal-informacao .modal-content .modal-header {
+            position: relative;
+            background-color: rgb(10, 172, 220);
+            width: 100%;
+            height: 15%;
+            text-align: center;
+            color: #fff;
+        }
+
+        .modal-informacao .modal-content .modal-header h1 {
+            padding: 1% 10px;
+        }
+
+        .modal-informacao .modal-content .modal-body {
+            border: 0px solid #000;
+            width: 100%;
+            height: 65%;
+        }
+
+        .modal-informacao .modal-content .modal-body select {
+            width: 50%;
+            height: 25%;
+            margin-top: 6.5%;
+        }
+
+        .modal-informacao .modal-content .modal-footer {
+            border: 0px solid #000;
+            width: 100%;
+            height: 19.5%;
+            display: flex;
+            flex-wrap: wrap;
+            /*um dos passos para deixar responsivo*/
+        }
+
+        .modal-informacao .modal-content .modal-footer .btn-save {
+            position: relative;
+            background-color: rgb(10, 172, 220);
+            max-width: 100px;
+            height: 0 auto;
+            left: 1%;
+            font-size: 12px;
+            padding: 5px;
+            margin-top: 2px;
+            border: 2px solid rgb(10, 172, 220);
+            border-radius: 5px;
+            cursor: pointer;
+            transform: bacground .3s;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .modal-informacao .modal-content .modal-footer .btn-cancelar {
+            position: relative;
+            background-color: rgb(10, 172, 220);
+            max-width: 100px;
+            height: 0 auto;
+            left: 5%;
+            font-size: 12px;
+            border: 2px solid rgb(10, 172, 220);
+            border-radius: 5px;
+            cursor: pointer;
+            transform: bacground .3s;
+            color: #fff;
+            font-weight: bold;
+        }
+    </style>
+
+    <script src="//wurfl.io/wurfl.js" crossorigin></script>
+
+    <script>
+        let modal = null;
+
+        if (WURFL.is_mobile && WURFL.form_factor === "Smartphone") {
+            //alert("Celular");
+        } else {
+            //alert("Computador");
+        }
+
+        function voltarPagina() {
+            window.location = '../'
+        }
+
+        function getFormAtualizacao() {
+            window.location = '../atualizacao-mensalista';
+        }
+
+        function getFormCancelamento(pr) {
+            window.location = '../busca/pausar-ativar/'+pr;
+        }
+
+        //Script modal
+        function openModal(mn) {
+            id_modal = mn;
+            modal = document.getElementById(mn);
+
+            if (typeof modal == 'undefined' || modal == null)
+                return;
+
+            modal.style.display = 'Block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(mn) {
+
+            let modal = document.getElementById(mn);
+
+            if (typeof modal == 'undefined' || modal == null)
+                return;
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        let btn_save = document.getElementById("btn-save");
+        let btn_cancelar = document.getElementById("btn-cancelar");
+        let tipo = document.getElementById("tipo");
+
+        btn_save.addEventListener("click", function (event) {
+            if (tipo.value == "") {
+                alert("Tem que selecionar o tipo de credencial para prosseguir!");
+            }
+            if (tipo.value == "Autorizada") {
+                window.location.href = "/cadastro-autorizada/";
+            }
+            if (tipo.value == "Mensalista") {
+                window.location.href = "/cadastro-mensalista/";
+            }
+        });
+
+        btn_cancelar.addEventListener("click", function (event) {
+            //let modal = document.getElementById('modal-2via');
+            console.log("TESTE:"+modal.id)
+            if(typeof modal != 'undefined' || modal != null){
+                closeModal('modal-2via');
+            }
+            modal = document.getElementById('modal-informacao');
+            if(typeof modal != 'undefined' || modal != null){
+                closeModal('modal-informacao');
+            }
+            
+        });
+    </script>
+
+    </html>

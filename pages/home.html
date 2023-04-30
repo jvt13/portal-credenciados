@@ -1,0 +1,141 @@
+<%- include('./partials/header.html') %>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 16px;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .container-home {
+            position: relative;
+            margin: 0 auto;
+            background-color: #c0c0c0;
+            width: 70%;
+            height: 35%;
+        }
+
+        .container-home .center {
+            position: relative;
+            margin: 0 auto;
+            width: 90%;
+            height: 100%;
+            border: 0px solid #000;
+        }
+
+        .container-home .center form.home {
+            position: relative;
+            border: 0px solid #000;
+            width: 100%;
+            height: 70%;
+        }
+
+        .container-home .center form.home .busca {
+            position: relative;
+            color: #000;
+            margin-top: 10px;
+            padding-top: 10px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .container-home .center form.home .busca input[type=tel] {
+            position: relative;
+            width: 100%;
+        }
+
+        .container-home .center form.home input[type=submit] {
+            position: relative;
+            background-color: rgb(10, 172, 220);
+            width: 100%;
+            font-size: 12px;
+            padding: 5px;
+            margin-top: 10px;
+            border: 2px solid rgb(10, 172, 220);
+            border-radius: 5px;
+            cursor: pointer;
+            transform: bacground .3s;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .container-home .center form.home input[type=submit]:hover {
+            background-color: rgb(10, 172, 220);
+            color: #000;
+        }
+
+        .container-home .center form.home input[type=submit]:active {
+            background-color: rgb(33, 156, 70);
+            color: #fff;
+        }
+
+        .container-home .modo-gestao{
+            position: relative;
+            background-color: rgb(10, 172, 220);
+            width: 52px;
+            height: 52px;
+            font-size: 12px;
+            margin-top: 5px;
+            border: 2px solid rgb(10, 172, 220);
+            border-radius: 5px;
+            cursor: pointer;
+            transform: bacground .3s;
+            color: #fff;
+            font-weight: bold;
+
+        }
+
+        .container-home .modo-gestao input{
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+
+    <script language=javascript type="text/javascript">
+
+        function trataMaskCPF(id) {
+            let cpf = document.getElementById(id);
+
+            console.log("ID:" + cpf.value.length);
+        }
+
+        function maskCPF(value) {
+            console.log("Leng:" + value.length);
+            if (!value) return "";
+
+            console.log("Leng:" + value.length);
+        }
+
+        function gestao(){
+            window.location = "/gestao"
+        }
+    </script>
+
+    <body>
+        <script async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2686761709570090"
+            crossorigin="anonymous"></script>
+
+        <div class="container-home">
+            <div class="center">
+                <form class="home" method="post" action="/busca">
+                    <div class="busca">CPF: &nbsp;&nbsp;<input type="tel" id="cpf" name="cpf"
+                            placeholder="digite o CPF (só números)" maxlength="15" onkeyup="trataMaskCPF(this.id)"
+                            required /></div>
+                    <input type="submit" name="acao" value="BUSCAR" />
+                    <input type="submit" name="acao" value="STATUS DA CREDENCIAL" formaction="/status" />
+                </form>
+
+                <div class="modo-gestao">
+                    <img src="../public/images/management_64.png" type="button" value="Controle" width="50" height="50" onclick="gestao()"/>
+                </div>
+
+            </div>
+        </div>
+
+    </body>
+
+    </html>

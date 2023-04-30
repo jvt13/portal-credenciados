@@ -1,0 +1,409 @@
+<%- include('../partials/header.html') %>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 16px;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .container-home {
+            position: relative;
+            margin: 0 auto;
+            background-color: #c0c0c0;
+            margin-top: 10px;
+            width: 70%;
+            height: 80%;
+            display: block;
+        }
+
+        .container-home .center {
+            position: relative;
+            margin: 0 auto;
+            width: 90%;
+            height: 100%;
+            border: 0px solid #000;
+        }
+
+        .container-home .center form.home {
+            position: relative;
+            border: 0px solid #000;
+            width: 100%;
+            height: 70%;
+        }
+
+        .container-home .center form.home .busca {
+            position: relative;
+            color: #000;
+            margin-top: 10px;
+            padding-top: 10px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .container-home .center form.home .busca input[type=tel] {
+            position: relative;
+            width: 100%;
+        }
+
+        .container-home .center form.home input[type=submit] {
+            position: relative;
+            background-color: rgb(10, 172, 220);
+            width: 100%;
+            font-size: 12px;
+            padding: 5px;
+            margin-top: 10px;
+            border: 2px solid rgb(10, 172, 220);
+            border-radius: 5px;
+            cursor: pointer;
+            transform: bacground .3s;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .container-home .center form.home input[type=submit]:hover {
+            background-color: rgb(10, 172, 220);
+            color: #000;
+        }
+
+        .container-home .center form.home input[type=submit]:active {
+            background-color: rgb(33, 156, 70);
+            color: #fff;
+        }
+
+        .container-home .modo-gestao {
+            position: relative;
+            background-color: rgb(10, 172, 220);
+            width: 52px;
+            height: 52px;
+            font-size: 12px;
+            margin-top: 5px;
+            border: 2px solid rgb(10, 172, 220);
+            border-radius: 5px;
+            cursor: pointer;
+            transform: bacground .3s;
+            color: #fff;
+            font-weight: bold;
+
+        }
+
+        .container-home .modo-gestao input {
+            width: 50px;
+            height: 50px;
+        }
+
+        /*Table*/
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table td,
+        th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table .tr-dados {
+            height: 20px;
+            background-color: #3e8e41;
+        }
+
+        table tr th {
+            background-color: rgb(10, 172, 220);
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        table button:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+
+
+    <script language=javascript type="text/javascript">
+
+        function trataMaskCPF(id) {
+            let cpf = document.getElementById(id);
+
+            console.log("ID:" + cpf.value.length);
+        }
+
+        function maskCPF(value) {
+            console.log("Leng:" + value.length);
+            if (!value) return "";
+
+            console.log("Leng:" + value.length);
+        }
+
+        function atualizaTabela() {
+            var filter = document.getElementById('select_status').value;
+
+            fetch('/gestao', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filter: filter })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    var tabela = document.getElementById('lista');
+                    tabela.innerHTML = '<tr><th>NOME</th><th>CPF</th><th>DATA DA SOLICITAÇÃO</th><th>PRAZO</th><th>STATUS</th><th></th></tr>';
+
+                    for (let i = 0; i < data.list.length; i++) {
+                        tabela.innerHTML += "<tr><td>" + data.list[i].nome + "</td><td>" + data.list[i].cpf + "</td><td>" + data.list[i].dta_solicitacao + "</td><td>"
+                            + data.list[i].dta_limite + "</td><td>" + data.list[i].status1 + "</td>"
+                            + `<td><button onclick="openModal('modal-opcao-baixa','','','container-home','${data.list[i].id}', '${data.list[i].nome}', '${data.list[i].status}')">Validar</button></td></tr>`
+                    }
+                }
+                )
+                .catch(error => console.error(error));
+
+        }
+
+        function trataBtnBaixa() {
+            var modal = document.getElementById('modal-opcao-baixa');
+            modal.style.display = 'none';
+            openModal('modal-ass', 'assinatura', 'dados-assinatura', 'modal-opcao-baixa', id_objeto);
+            //alert("Valor:"+id_objeto)
+
+            var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                if (window.orientation === 0) {//modo retrato
+                    alert("Para facilidar na assinatura, ative a rotação da tela e vire o dispositivo na horizontal.");
+                }
+            }
+        }
+
+        function trataBtnStatus() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/gestao/update", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify({ id: id_objeto, status: 'PENDENTE' }))
+
+            setTimeout(function () {
+                atualizaTabela();
+            }, 500);
+            closeModal('modal-opcao-baixa', 'container-home');
+        }
+
+        //setInterval(atualizarTabela, 5000); // atualizar a cada 5 segundos, por exemplo
+
+        function sendPost(id) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/gestao/update", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify({ data: document.getElementById('dados-assinatura').value, id: id, status: 'REALIZADO' }));
+
+            xhr.onload = function () {
+                if (xhr.status === 200) { // Verifica se o status da resposta é 200 (OK)
+                    console.log(xhr.response); // Exibe o response da solicitação HTTP
+                } else {
+                    console.log('Erro ao buscar dados.'); // Exibe uma mensagem de erro se o status da resposta não for 200 (OK)
+                }
+            };
+            xhr.onerror = function () {
+                console.log('Erro na solicitação.'); // Exibe uma mensagem de erro se ocorrer um erro na solicitação HTTP
+            };
+
+            setTimeout(function () {
+                atualizaTabela();
+            }, 100);
+        }
+
+        function sendGet() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "/gestao2", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify({ data: document.getElementById('dados-assinatura').value }));
+        }
+    </script>
+
+    <script src=""></script>
+
+    <body>
+
+        <%- include('../partials/modal/modal-baixa.html') %>
+            <%- include('../partials/modal/modal-assinatura.html') %>
+
+                <div id="container-home" class="container-home">
+                    <div class="center">
+                        <div class="filter">
+                            <label>STATUS:</label>
+                            <select id="select_status" onchange="atualizaTabela()">
+                                <option></option>
+                                <option>REALIZADO</option>
+                                <option selected>PENDENTE</option>
+                            </select>
+
+                            <label>CPF:</label>
+                            <input type="text" />
+                        </div><br>
+
+
+                        <div class="solicitacoes">
+                            <table border="1" cellpadding='0' cellspacing='0' id="lista">
+                                <tr>
+                                    <th>NOME</th>
+                                    <th>CPF</th>
+                                    <th>DATA DA SOLICITAÇÃO</th>
+                                    <th>PRAZO</th>
+                                    <th>STATUS</th>
+                                    <th></th>
+                                </tr>
+                                <%for(let i=0; i < list.length; i++){%>
+                                    <tr class="tr-dados">
+                                        <td>
+                                            <%= list[i].nome %>
+                                        </td>
+                                        <td>
+                                            <%= list[i].cpf %>
+                                        </td>
+                                        <td>
+                                            <%= list[i].dta_solicitacao %>
+                                        </td>
+                                        <td>
+                                            <%= list[i].dta_limite %>
+                                        </td>
+                                        <td>
+                                            <%= list[i].status1 %>
+                                        </td>
+
+                                        <%if(list[i].status !="REALIZADO" ){ %>
+                                            <td>
+                                                <!--<input type="button" value="Validar"
+                                            onclick="openModal('dv-modal','assinatura', 'dados-assinatura', 'container-home', '<%= list[i].id %>')" />-->
+                                                <button id="btn_validar"
+                                                    onclick="openModal('modal-opcao-baixa','','','container-home','<%= list[i].id %>','<%= list[i].nome %>', '<%= list[i].status %>')">Validar</button>
+                                            </td>
+                                            <%}%>
+                                    </tr>
+                                    <%}%>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+    </body>
+
+    <script>
+        var id_assinatura = "";
+        var id_modal = "";
+        var id_dados_assinatura = "";
+        var id_objeto = "";
+        var class_pagina = "";
+        var nome = "", status = "";
+
+
+        function openModal(mn, id_ass, id2, pagina, id_soli, nome_soli, status_soli) {
+
+            id_dados_assinatura = id2;
+            id_assinatura = id_ass;
+            id_modal = mn;
+            class_pagina = pagina;
+            id_objeto = id_soli;
+            nome = nome_soli;
+            status = status_soli;
+            let home = document.getElementById(pagina);
+            let modal = document.getElementById(mn);
+
+            if (typeof modal == 'undefined' || modal == null)
+                return;
+
+            modal.style.display = 'Block';
+            document.body.style.overflow = 'hidden';
+            home.style.display = 'none';
+
+            if (mn == "modal-opcao-baixa") {
+                let modal_titulo = document.getElementById('titulo-modal-opcao-baixa');
+                let btn_up = document.getElementById('btn-update-solicitacao');
+                let btn_baixa = document.getElementById('btn-baixa-solicitacao');
+                modal_titulo.innerHTML = "CREDENDIADO " + nome_soli + " - " + status;
+
+                if (status == "PENDENTE") {
+                    btn_up.style.display = 'none';
+                    btn_baixa.style.display = 'block';
+                } else {
+                    btn_up.style.display = 'block';
+                    btn_baixa.style.display = 'none';
+                }
+            }
+        }
+
+        function closeModal(mn, principal) {
+            let modal = document.getElementById(mn);
+            let home = document.getElementById(principal);
+
+            if (typeof modal == 'undefined' || modal == null)
+                return;
+            if (mn == "modal-ass") {
+                clear(); // Function da pagina de assinatura
+                //signaturePad.clear();
+                //document.getElementById('dados-assinatura').value = "";
+            }
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            home.style.display = 'Block';
+        }
+
+        /*Campo assinatura*/
+        function download(dataURL, filename) {
+            if (navigator.userAgent.indexOf("Safari") > -1 && navigator.userAgent.indexOf("Chrome") === -1) {
+                window.open(dataURL);
+            } else {
+                var blob = dataURLToBlob(dataURL);
+                var url = window.URL.createObjectURL(blob);
+
+                var a = document.createElement("a");
+                a.style = "display: none";
+                a.href = url;
+                a.download = filename;
+
+                document.body.appendChild(a);
+                a.click();
+
+                window.URL.revokeObjectURL(url);
+            }
+        }
+
+        function dataURLToBlob(dataURL) {
+            // Code taken from https://github.com/ebidel/filer.js
+            var parts = dataURL.split(';base64,');
+            var contentType = parts[0].split(":")[1];
+            var raw = window.atob(parts[1]);
+            var rawLength = raw.length;
+            var uInt8Array = new Uint8Array(rawLength);
+
+            for (var i = 0; i < rawLength; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+
+            return new Blob([uInt8Array], { type: contentType });
+        }
+
+
+    </script>
+
+    </html>

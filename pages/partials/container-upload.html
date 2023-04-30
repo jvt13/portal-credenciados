@@ -1,0 +1,225 @@
+<script>
+
+    function varrerUploads() {
+        const lista = ['img-1', 'img-2', 'img-3'];
+        var ret = false;
+        const img = "";
+
+        for (var i = 0; i < lista.length; i++) {
+            img = document.getElementById(lista[i]);
+
+            if (img.value != "") {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    function checkForm(event) {
+        var file = document.getElementById('file-upload');
+
+        /*if (file.value !== "") {
+            return true;
+        }*/
+        if (varrerUploads) {
+            var file = document.getElementById('file-upload');
+            //alert("Teste:"+file.value)
+            return true;
+            //event.preventDefault();
+        }
+        alert('Falta anexar arquivos!');
+        event.preventDefault();
+    }
+
+    function checkFile(event) {
+        var file = document.getElementById('file-upload');
+        var extencao = "";
+        extencao = file.value.substring(file.value.lastIndexOf(".") + 1, file.value.length);
+        const fileSize = file.files.item(0).size;
+        const fileMb = fileSize / 1024 ** 2;
+        //alert('Tamanho:' + fileMb);
+
+        if (fileMb > 2) {
+            alert('Por favor selecionar um arquivo de até 2MB!')
+            file.value = "";
+            return false;
+        }
+
+        if (validaExtencao(extencao)) {
+            trataFile(event, file.value, file);
+        } else {
+            alert("Extenção de arquivo invalida!");
+            file.value = "";
+            return false;
+        }
+    }
+
+    function trataFile(event, name, file) {
+        const lista = ['img-1', 'img-2', 'img-3', 'img-4'];
+
+        name = name.substring(name.lastIndexOf("\\"), name.length);
+        name = name.replace("\\", "");
+
+        let img2 = document.getElementById('img1');
+        let reader = new FileReader();
+        reader.onload = () => {
+            img2.src = reader.result;
+
+            for (var i = 0; i < lista.length; i++) {
+                var blob = document.getElementById(lista[i]);//txt_img_1
+                if (blob.value == "") {
+                    blob.value = reader.result;
+                    document.getElementById('txt_img_' + (i + 1)).value = name;
+                    file.value = "";
+                    break;
+                }
+            }
+        }
+        reader.readAsDataURL(file.files[0]);
+        return true;
+    }
+
+    function eventoBusca() {
+        const lista = ['img-1', 'img-2', 'img-3', 'img-4'];
+        var img = "";
+        for (var i = 0; i < (lista.length + 1); i++) {
+            if (i >= lista.length) {
+                alert('Os ' + lista.length + ' arquivos necessários, já foram anexados! Se quiser trocar algum arquivo, exclua ele e anaxe outro.');
+                return false;
+            }
+            img = document.getElementById(lista[i]);
+
+            if (img.value == "") {
+                return true;
+            }
+        }
+    }
+    function apagarArquivo(id, id_txt) {
+        document.getElementById(id).value = "";
+        document.getElementById(id_txt).value = "";
+    }
+    function validaExtencao(targ) {
+        const extencao = ['jpg', 'jpeg', 'png', 'pdf'];
+
+        for (var i = 0; i < extencao.length; i++) {
+            if (targ.toLowerCase() == extencao[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Lato', sans-serif;
+        font-size: 12px;
+    }
+
+    .container {
+        margin: 0 auto;
+        background-color: #c0c0c0;
+        width: 100%;
+        height: 30%;
+        border: 0px solid #000;
+    }
+
+    .container table.table-upload {
+        width: 30%;
+        height: 100%;
+        border: 0px solid #000;
+    }
+
+    .container table.table-upload tr {
+        /*width: 100%;*/
+        height: 22px;
+        border: 0px solid red;
+    }
+
+    .container table.table-upload tr td {
+        margin: 0 auto;
+        border: 0px solid red;
+        align-items: center;
+    }
+
+    .container table.table-upload input[type=text] {
+        background-color: white;
+        font-size: 12px;
+        width: 98%;
+        height: 22px;
+        border: 0px solid #000;
+    }
+
+    .container table.table-upload input[type=button] {
+        background-color: rgb(10, 172, 220);
+        width: 100%;
+        height: 0 auto;
+        left: 0%;
+        top: -2px;
+        font-size: 12px;
+        border: 2px solid rgb(10, 172, 220);
+        border-radius: 5px;
+        cursor: pointer;
+        transform: bacground .3s;
+        color: #fff;
+        font-weight: bold;
+    }
+
+
+    .container table.table-upload input[type=button]:hover {
+        /*background-color: rgb(156, 156, 156);*/
+        color: black;
+    }
+
+    .container table.table-upload input[type=button]:active {
+        background-color: rgb(33, 156, 70);
+        color: #fff;
+    }
+</style>
+
+<img src="" id="img1" width="150" height="150" style="display: none;" />
+<div class="container">
+
+    <table class="table-upload" border="0" cellpadding='0' cellspacing='0'>
+        <tr>
+            <td colspan="2">
+                <input type="file" id="file-upload" name="file1" onchange="return checkFile(event)"
+                    onclick="return eventoBusca()" accept="image/png, image/jpg, image/jpeg, application/pdf" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" id="img-1" name="img_1" style="display: none;" />
+                <input type="text" id="txt_img_1" disabled />
+            </td>
+            <td><input type="button" id="btn-apagar" value="X" onclick="apagarArquivo('img-1', 'txt_img_1')" /></td>
+        </tr>
+
+        <tr>
+            <td>
+                <input type="text" id="img-2" name="img_2" style="display: none;" />
+                <input type="text" id="txt_img_2" disabled />
+            </td>
+            <td><input type="button" id="btn-apagar" value="X" onclick="apagarArquivo('img-2', 'txt_img_2')" /></td>
+        </tr>
+
+        <tr>
+            <td>
+                <input type="text" id="img-3" name="img_3" style="display: none;" />
+                <input type="text" id="txt_img_3" disabled />
+            </td>
+            <td><input type="button" id="btn-apagar" value="X" onclick="apagarArquivo('img-3','txt_img_3')" /></td>
+        </tr>
+
+        <tr>
+            <td>
+                <input type="text" id="img-4" name="img_4" style="display: none;" />
+                <input type="text" id="txt_img_4" disabled />
+            </td>
+            <td><input type="button" id="btn-apagar" value="X" onclick="apagarArquivo('img-4','txt_img_4')" /></td>
+        </tr>
+    </table>
+</div>

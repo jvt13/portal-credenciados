@@ -1,0 +1,166 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+}
+
+/*section .center{
+    width: 900px;
+    position: relative;
+    height: 90%;
+    border: 1px solid #000;
+}*/
+
+form.formulario th{
+  padding: 10px 10px;
+  /*border-radius: 10px 10px 10px 10px;*/
+  /*border-top: 3px solid rgb(10,172,220);*/
+  border-bottom: 3px solid rgb(10,172,220);
+}
+
+form.formulario th h2{
+  font-size: 16px;
+}
+
+form.formulario {
+  margin: 0 auto;
+  margin-top: 20px;
+  max-width: 70%;
+  border: 0px solid #000;
+  background-color: #c0c0c0;
+}
+
+/*form input[type=submit] {
+  width: 100%;
+  background-color: #0aacdc;
+  color: white;
+  font-size: 15px;
+  border: 0px;
+}*/
+
+/*.tab_assinaturas*/form.formulario input[type=button]{
+  background-color: rgb(10,172,220);
+  width: auto;
+  text-align: center;
+  font-size: 12px;
+  margin-top: 5px;
+  padding: 5px;
+  border: 2px solid rgb(10, 172, 220);
+  border-radius: 5px;
+  cursor: pointer;
+  transform: bacground .3s;
+  color: #fff;
+  font-weight: bold;
+}
+
+form.formulario input[type=button]:hover {
+  background-color: rgb(10,172,220);
+  color: #000;
+}
+
+form.formulario input[type=button]:active {
+  background-color: rgb(33, 156, 70);
+  color: #fff;
+}
+
+/*Style table*/
+form.formulario .tabela01 {
+  width: 100%;
+  color: black;
+  font-size: 18px;
+  border: 0px solid #c0c0c0;
+}
+
+form.formulario .tabela01 .grupo{
+  padding: 10px 0px 0px 0px;
+  border: 1px solid #000;
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom-width: 5px 25px;
+}
+
+form.formulario .tabela01 tr{
+  /*background-color: #0aacdc;*/
+  margin: 0 auto;
+  /*position: absolute;*/
+  height: 15px;
+}
+
+form.formulario .tabela01 tr td {
+  padding: 1px 5px;
+  font-size: 12px;
+  border: 0px solid #000;
+}
+
+form.formulario .tabela01 tr td select {
+  width: 100%;
+  font-size: 12px;
+}
+
+form.formulario .tabela01 tr td input[type=text] {
+  width: 100%
+}
+
+form.formulario .tabela01 tr td input[type=tel] {
+  width: 100%
+}
+
+form.formulario .tabela01 tr td input[type=checkbox] {
+  margin: -4px 10px;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+}
+/*Fim style Table*/
+
+/*Style campo assinaturas*/
+form.formulario .tab_assinaturas {
+  width: 100%;
+  height: 25%;
+  color: black;
+  border: 0px solid black;
+}
+
+form.formulario .tab_assinaturas tr td{
+  height: 80px;
+}
+ 
+form.formulario .tab_assinaturas tr td img{ /*Assinatura pronta*/
+  width: 100%;
+  height: 80px;
+}
+
+form.formulario .td_ass {
+  border-top: 1px solid #000;
+  border-top-width: 20px 10px;    
+  width: 50%;
+  text-align: center;
+}
+
+form.formulario .tab_assinaturas .td_ass .label{
+  border: 0px solid #000;
+  margin-bottom: 45px;
+}
+
+form.formulario .btn_solicitar{
+  width: 100%;
+  height: 5%;
+  background-color: #0aacdc;
+  color: white;
+  font-size: 15px;
+  border: 0px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+form.formulario .btn_solicitar:hover {
+  background-color: rgb(10,172,220);
+  color: #000;
+}
+
+form.formulario .btn_solicitar:active {
+  background-color: rgb(33, 156, 70);
+  color: #fff;
+}

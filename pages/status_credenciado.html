@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <div1 class="center">
+            <h2>Credenciado:<%= list.nome %></h2>
+            
+        </div1>
+    </div>
+
+    <h2>Status:<%= list.status %>
+    </h2>
+
+    <div>
+        <button onclick="baixarContrato()">Baixar contrato</button>
+    </div>
+
+</body>
+
+<script>
+
+function baixarContrato(){
+    window.location = "/status/baixar-contrato"
+}
+</script>
+
+</html>
