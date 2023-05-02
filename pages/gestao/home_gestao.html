@@ -96,63 +96,71 @@
         }
 
         /*Table*/
-        table {
+        #lista {
             border-collapse: collapse;
             width: 100%;
+            margin-bottom: 20px;
         }
 
-        table td,
-        th {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        /*table .tr-dados {
-            height: 10px;
-            background-color: #3e8e41;
-        }*/
-
-        table tr th {
+        #lista tr th {
             background-color: rgb(10, 172, 220);
             font-weight: bold;
             text-transform: uppercase;
             text-align: center;
+            height: 30px;
         }
 
-        table tr:nth-child(even) {
-            background-color: #f2f2f2;
-            height: 15px;
-        }
-
-        table tr:nth-child(odd) {
-            background-color: #e5e5e5;
-            height: 15px;
-        }
-
-        /*table .dados {
-            background-color: #4CAF50;
-            border: 2px solid black;
-            height: 15px;
+        /*#lista tr td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            font-size: 10px;
+            height: 35px;
         }*/
 
+        #lista .dados td {
+            min-width: 60px;
+            max-width: 100px;
+            height: 25px;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
-        table button {
-            background-color: #4CAF50;
+        #lista tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #lista tr:nth-child(odd) {
+            background-color: #e5e5e5;
+        }
+
+        #lista button {
+            background-color: rgb(10, 172, 220);
             border: none;
             color: white;
-            padding: 8px 16px;
+            padding: 2px 2px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
+            font-size: 12px;
+            /*margin: 4px 2px;*/
             cursor: pointer;
+            width: 100%;
         }
 
-        table button:hover {
-            background-color: #3e8e41;
+        #lista button:hover {
+            color: #000;
+            font-weight: bold;
         }
+
+        #lista button:active {
+            background-color: #3e8e41;
+            color: white;
+        }
+
+        /*Fim table*/
     </style>
 
 
@@ -193,7 +201,7 @@
                 }
                 )
                 .catch(error => console.error(error));
-            
+
             /* 
                 */
 
@@ -299,7 +307,7 @@
                         <div class="solicitacoes">
                             <table border="1" cellpadding='0' cellspacing='0' id="lista">
                                 <tr>
-                                    <th>NOME</th>
+                                    <th>nome</th>
                                     <th>CPF</th>
                                     <th>DATA DA SOLICITAÇÃO</th>
                                     <th>PRAZO</th>
