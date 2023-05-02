@@ -103,30 +103,11 @@
     }
 </script>
 
+<script src=""></script>
+
 <body>
 
-    <div id="dv-modal" class="modal">
-        <div class="modal-content"> 
-            <div class="modal-header">
-                <h1>Assinatura</h1>
-            </div>
-            <br>
-
-            <div class="modal-body">
-                <div class="container-assinatura">
-                    <div class="body-signature"><canvas id="signature-pad" class="signature-pad" width="600px" height="80px"></canvas></div><br><br>
-                    <button id="save" class="btn-save">Salvar</button>
-                    <button id="clear" class="btn-clear">Limpar</button>
-                    <input type="button" class="btn-cancelar" value="Cancelar" onclick="closeModal('dv-modal')" />
-                </div>
-            </div>
-            <br>
-            <br>
-            <div class="modal-footer">
-
-            </div>
-        </div>
-    </div>
+    <%- include('./partials/modal/modal-assinatura.html') %>
 
     <form class="formulario" method="post" action="/cadastro-mensalista/" onsubmit="validaForm(event);">
         <table border="0" class="tabela01" cellpadding='0' cellspacing='0'>
@@ -285,13 +266,13 @@
                 <td class="td_ass" style="font-size: 12px;">
                     <div class="label">Solicitante &nbsp;<input id="btn-assi-solicitante" type="button"
                         value="Assinar"
-                        onclick="openModal('dv-modal','assinatura-solicitante', 'dados-assinatura-solicitante')" /></div>
+                        onclick="openModal('modal-ass','assinatura-solicitante', 'dados-assinatura-solicitante', 'formulario')" /></div>
                 </td>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td class="td_ass" style="font-size: 12px;">
                     <div class="label">Proprietário/Gerente &nbsp;<input id="btn-assi-prop-gerente"
                         type="button" value="Assinar"
-                        onclick="openModal('dv-modal','assinatura-prop-gerente', 'dados-assinatura-prop-gerente')" /></div>
+                        onclick="openModal('modal-ass','assinatura-prop-gerente', 'dados-assinatura-prop-gerente', 'formulario')" /></div>
                 </td>
             </tr>
 

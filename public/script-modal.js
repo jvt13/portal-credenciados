@@ -1,12 +1,15 @@
 var id_assinatura = "";
 var id_modal = "";
 var id_dados_assinatura = "";
+var id_home = "";
+var canvas = document.getElementById('canvas');
 
-function openModal(mn, id, id2) {
+function openModal(mn, id, id2, pagina) {
 
     id_dados_assinatura = id2;
     id_assinatura = id;
     id_modal = mn;
+    id_home = pagina;
     let modal = document.getElementById(mn);
 
     if (typeof modal == 'undefined' || modal == null)
@@ -14,16 +17,6 @@ function openModal(mn, id, id2) {
 
     modal.style.display = 'Block';
     document.body.style.overflow = 'hidden';
-}
-
-function closeModal(mn) {
-    let modal = document.getElementById(mn);
-
-    if (typeof modal == 'undefined' || modal == null)
-        return;
-    signaturePad.clear();
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto';
 }
 
 /*Campo assinatura*/
@@ -61,12 +54,6 @@ function dataURLToBlob(dataURL) {
     return new Blob([uInt8Array], { type: contentType });
 }
 
-
-var signaturePad = new SignaturePad(document.getElementById('signature-pad'), {
-    backgroundColor: 'rgba(255, 255, 255, 0)',
-    penColor: 'rgb(0, 0, 0)'
-});
-
 var saveButton = document.getElementById('save');
 var cancelButton = document.getElementById('clear');
 
@@ -74,17 +61,13 @@ saveButton.addEventListener("click", function (event) {
     if (signaturePad.isEmpty()) {
         alert("Faça sua assinatura.");
     } else {
-        var dataURL = signaturePad.toDataURL();
+        var dataURL = canvas.toDataURL();
         //download(dataURL, "signature.png");
         //alert(dataURL);
         //$("#imageCheck").val(dataURL);
+        alert(id_dados_assinatura+"|"+id_assinatura)
         document.getElementById(id_dados_assinatura).value = [dataURL];
         document.getElementById(id_assinatura).src = [dataURL];
         closeModal(id_modal);
     }
-});
-
-cancelButton.addEventListener('click', function (event) {
-    signaturePad.clear();
-    document.getElementById(id_assinatura).src = "";
 });

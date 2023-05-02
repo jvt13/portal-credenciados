@@ -96,31 +96,8 @@
     </script>
 
     <body>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2686761709570090"
-     crossorigin="anonymous"></script>
-
-        <div id="dv-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1>Assinatura</h1>
-                </div>
-                <br>
-
-                <div class="modal-body">
-                    <div class="container-assinatura">
-                        <div class="body-signature"><canvas id="signature-pad" class="signature-pad" width="600px" height="80px"></canvas></div><br><br>
-                        <button id="save" class="btn-save">Salvar</button>
-                        <button id="clear" class="btn-clear">Limpar</button>
-                        <input type="button" class="btn-cancelar" value="Cancelar" onclick="closeModal('dv-modal')" />
-                    </div>
-                </div>
-                <br>
-                <br>
-                <div class="modal-footer">
-
-                </div>
-            </div>
-        </div>
+        
+        <%- include('./partials/modal/modal-assinatura.html') %>
 
         <form class="formulario" method="post" action="/cadastro-autorizada" onsubmit="validaForm(event);">
             <table border="0" class="tabela01">
@@ -175,26 +152,28 @@
                     <th colspan="3" class="grupo">Endereço</th>
                 </tr>
                 <tr>
-                    <td>CEP:&nbsp;<input type="text" id="end_cep" maxlength="9" onkeyup="verificaDigitos(event)" placeholder="digitar o cep para a busca"
-                            required /></td>
+                    <td>CEP:&nbsp;<input type="text" id="end_cep" maxlength="9" onkeyup="verificaDigitos(event)"
+                            placeholder="digitar o cep para a busca" required /></td>
                     <td>
                         Bairro: <input type="text" id="end_bairro" name="end_bairro" placeholder="digite o Bairro"
                             required />
                     </td>
                     <td>Cidade: <input type="text" id="end_cidade" name="end_cidade" placeholder="digite a Cidade"
-                        required />
-                </td>
+                            required />
+                    </td>
                 </tr>
-    
+
                 <tr>
-                    <td>UF: <input type="text" id="end_uf" name="end_uf" placeholder="digite o Estado ex:(MT)" required />
+                    <td>UF: <input type="text" id="end_uf" name="end_uf" placeholder="digite o Estado ex:(MT)"
+                            required />
                     </td>
                     <td>Av/Rua: <input type="text" name="end_rua" id="end_rua" placeholder="digite a rua" required />
                     </td>
-                    <td>Nº: <input type="text" id="end_numero" name="end_numero" placeholder="digite o número" required />
+                    <td>Nº: <input type="text" id="end_numero" name="end_numero" placeholder="digite o número"
+                            required />
                     </td>
                 </tr>
-    
+
                 <tr>
                     <td>Complemento: <input type="text" id="end_complemento" name="end_complemento"
                             placeholder="digite o complemento" required />
@@ -210,26 +189,27 @@
 
                 <tr>
                     <td>Veiculo:&nbsp;<select name="select_veiculo">
-                        <option></option>
-                        <option>Carro</option>
-                        <option>Moto</option>
-                    </select></td>
-                    <td>Placa do veículo:<input type="text" name="placa" placeholder="digite a placa do veículo" required />
+                            <option></option>
+                            <option>Carro</option>
+                            <option>Moto</option>
+                        </select></td>
+                    <td>Placa do veículo:<input type="text" name="placa" placeholder="digite a placa do veículo"
+                            required />
                     </td>
                     <td>Marca:&nbsp;<input type="text" name="marca" placeholder="digite a marca do veículo" required />
                     </td>
                 </tr>
-    
+
                 <tr>
-                    <td>Modelo:&nbsp;<input type="text" name="modelo" placeholder="digite o modelo do veículo" required /></td>
+                    <td>Modelo:&nbsp;<input type="text" name="modelo" placeholder="digite o modelo do veículo"
+                            required /></td>
                     <td>Cor:&nbsp;<input type="text" name="cor" placeholder="digite a cor do veículo" required /></td>
-                    <td>Ano:&nbsp;<input type="text" name="ano" placeholder="digite o ano do veículo"
-                            required />
+                    <td>Ano:&nbsp;<input type="text" name="ano" placeholder="digite o ano do veículo" required />
                     </td>
                     <td>&nbsp;</td>
                 </tr>
 
-            </table> 
+            </table>
             <br>
 
             <table border="0" class="tab_assinaturas" cellpadding='0' cellspacing='0'>
@@ -244,14 +224,16 @@
                 <tr>
                     <td class="td_ass" style="font-size: 12px;">
                         <div class="label">Solicitante &nbsp;<input id="btn-assi-solicitante" type="button"
-                            value="Assinar"
-                            onclick="openModal('dv-modal','assinatura-solicitante', 'dados-assinatura-solicitante')" /></div>
+                                value="Assinar"
+                                onclick="openModal('modal-ass','assinatura-solicitante', 'dados-assinatura-solicitante','formulario')" />
+                        </div>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td class="td_ass" style="font-size: 12px;">
-                        <div class="label">Proprietário/Gerente &nbsp;<input id="btn-assi-prop-gerente"
-                            type="button" value="Assinar"
-                            onclick="openModal('dv-modal','assinatura-prop-gerente', 'dados-assinatura-prop-gerente')" /></div>
+                        <div class="label">Proprietário/Gerente &nbsp;<input id="btn-assi-prop-gerente" type="button"
+                                value="Assinar"
+                                onclick="openModal('modal-ass','assinatura-prop-gerente', 'dados-assinatura-prop-gerente','formulario')" />
+                        </div>
                     </td>
                 </tr>
 
