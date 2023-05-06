@@ -182,20 +182,22 @@
         if (!Drawing) {
             alert("Faça sua assinatura.");
         } else {
+            alert('55');
             var dataURL = canvas.toDataURL();
             document.getElementById('dados-assinatura').value = [dataURL];
+            alert(id_home);
 
             if (id_home == "formulario") {
                 document.getElementById(id_dados_assinatura).value = [dataURL];
                 document.getElementById(id_assinatura).src = [dataURL];
 
-                closeModal('modal-ass');
-            } else {
+                closeModal('modal-ass','formulario');
+            }else {
                 sendPost(id_objeto);// function e variavel da pagina inicial.
+                closeModal('modal-ass', 'container-home');
             }
 
             clear();
-            closeModal('modal-ass', 'container-home');
         }
     });
 
@@ -231,14 +233,16 @@
         return true;
     }
 
-    function closeModal(mn) {
+    function closeModal(mn, principal) {
         let modal = document.getElementById(mn);
+        let home = document.getElementById(principal);
 
         if (typeof modal == 'undefined' || modal == null)
             return;
         //signaturePad.clear();
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
+        home.style.display = 'Block';
     }
 </script>
 

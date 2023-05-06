@@ -54,7 +54,7 @@ function dataURLToBlob(dataURL) {
     return new Blob([uInt8Array], { type: contentType });
 }
 
-var saveButton = document.getElementById('save');
+var saveButton = document.getElementById('save.');
 var cancelButton = document.getElementById('clear');
 
 saveButton.addEventListener("click", function (event) {
