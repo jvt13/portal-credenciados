@@ -182,10 +182,8 @@
         if (!Drawing) {
             alert("Faça sua assinatura.");
         } else {
-            alert('55');
             var dataURL = canvas.toDataURL();
             document.getElementById('dados-assinatura').value = [dataURL];
-            alert(id_home);
 
             if (id_home == "formulario") {
                 document.getElementById(id_dados_assinatura).value = [dataURL];
