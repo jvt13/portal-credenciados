@@ -74,6 +74,19 @@
             color: #fff;
         }
 
+        .container-home .filter{
+            padding-top: 5px;
+        }
+
+        .container-home .filter label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .container-home .filter select, .container-home .filter input {
+            font-size: 16px;
+        }
+
         .container-home .modo-gestao {
             position: relative;
             background-color: rgb(10, 172, 220);
@@ -100,6 +113,7 @@
             border-collapse: collapse;
             width: 100%;
             margin-bottom: 20px;
+            border-color: rgb(220, 220, 220);
         }
 
         #lista tr th {
@@ -110,6 +124,15 @@
             height: 30px;
         }
 
+        #lista .dados td:first-child {
+            text-align: left;
+            padding-left: 5px;
+        }
+
+        #lista .dados td:not(:first-child) {
+            text-align: center;
+        }
+
         /*#lista tr td {
             border: 1px solid #ddd;
             padding: 8px;
@@ -117,6 +140,11 @@
             font-size: 10px;
             height: 35px;
         }*/
+
+        #lista .dados tr:hover {
+            background-color: #ccc;
+            /* define a cor de fundo para quando o mouse estiver sobre a linha */
+        }
 
         #lista .dados td {
             min-width: 60px;
@@ -148,6 +176,7 @@
             /*margin: 4px 2px;*/
             cursor: pointer;
             width: 100%;
+            height: 100%;
         }
 
         #lista button:hover {
@@ -161,6 +190,34 @@
         }
 
         /*Fim table*/
+
+
+        /*Responsivo*/
+        @media screen and (max-width: 768px) {
+            .container-home {
+                width: 100%;
+                height: 100%;
+            }
+
+            #lista th {
+                font-size: 0.8rem;
+            }
+
+            #lista .dados td {
+                font-size: 0.5rem;
+            }
+
+            /*Filter*/
+            .container-home .filter label {
+                font-size: 0.8rem;
+                font-weight: bold;
+            }
+
+            .container-home .filter select,
+            .container-home .filter input {
+                font-size: 0.5rem;
+            }
+        }
     </style>
 
 
@@ -190,7 +247,7 @@
                 .then(response => response.json())
                 .then(data => {
                     var tabela = document.getElementById('lista');
-                    tabela.innerHTML = '<tr><th>NOME</th><th>CPF</th><th>DATA DA SOLICITAÇÃO</th><th>PRAZO</th><th>STATUS</th><th></th></tr>';
+                    tabela.innerHTML = '<tr><th>NOME</th><th>CPF/CNPJ</th><th>DATA DA SOLICITAÇÃO</th><th>PRAZO</th><th>STATUS</th><th></th></tr>';
 
                     for (let i = 0; i < data.list.length; i++) {
                         tabela.innerHTML += "<tr class=\"dados\"><td>" + data.list[i].nome + "</td><td>" + data.list[i].cpf + "</td><td>" + data.list[i].dta_solicitacao + "</td><td>"
@@ -198,12 +255,10 @@
                             + `<td><button onclick="openModal('modal-opcao-baixa','','','container-home','${data.list[i].id}', '${data.list[i].nome}', '${data.list[i].status}')">Validar</button></td></tr>`
                     }
                     manterAlgunsCSS();
+                    verificarStatusTable();
                 }
                 )
                 .catch(error => console.error(error));
-
-            /* 
-                */
 
         }
 
@@ -242,21 +297,22 @@
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/gestao/update", true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify({ id: id_objeto, status: 'PENDENTE' }))
+            xhr.send(JSON.stringify({ id: id_objeto, status: 'PENDENTE', baixa: '', dados: '' }))
 
             setTimeout(function () {
                 atualizaTabela();
-            }, 500);
+            }, 100);
             closeModal('modal-opcao-baixa', 'container-home');
         }
 
         //setInterval(atualizarTabela, 5000); // atualizar a cada 5 segundos, por exemplo
 
         function sendPost(id) {
+            var filter = document.getElementById('filter');
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "/gestao/update", true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify({ data: document.getElementById('dados-assinatura').value, id: id, status: 'REALIZADO' }));
+            xhr.send(JSON.stringify({ dados: document.getElementById('dados-assinatura').value, id: id, status: 'REALIZADO', baixa: 'baixa' }));
 
             xhr.onload = function () {
                 if (xhr.status === 200) { // Verifica se o status da resposta é 200 (OK)
@@ -299,8 +355,8 @@
                                 <option selected>PENDENTE</option>
                             </select>
 
-                            <label>CPF:</label>
-                            <input type="text" />
+                            <!--<label>CPF:</label>
+                            <input type="text" />-->
                         </div><br>
 
 
@@ -308,7 +364,7 @@
                             <table border="1" cellpadding='0' cellspacing='0' id="lista">
                                 <tr>
                                     <th>nome</th>
-                                    <th>CPF</th>
+                                    <th>CPF/CNPJ</th>
                                     <th>DATA DA SOLICITAÇÃO</th>
                                     <th>PRAZO</th>
                                     <th>STATUS</th>
@@ -348,6 +404,30 @@
                     </div>
                 </div>
     </body>
+
+    <script>
+
+        verificarStatusTable();
+
+        function verificarStatusTable() {
+            var table = document.getElementById('lista');
+            var rows = table.getElementsByTagName('tr');
+            var valor = "";
+
+            for (let i = 0; i < rows.length; i++) {
+                valor = rows[i].cells[4].textContent.trim();
+
+                if (valor == "PENDENTE") {
+                    //rows[i].style.background = "#FFD700"
+                }
+
+                if (valor == "ATRASADO") {
+                    rows[i].cells[4].style.background = "#FF0000"
+                }
+            }
+
+        }
+    </script>
 
     <script>
         var id_assinatura = "";

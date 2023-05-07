@@ -592,12 +592,19 @@ app.get('/gestao', (req, res) => {
 app.post('/gestao/update', (req, res) => {
     console.log("Valor do POST: " + req.body.id);
     var id = req.body.id;
-    var dados = req.body.data;
+    var dados = req.body.dados;
     var status = req.body.status;
-    var data = new Date()
+    var baixa = req.body.baixa;
+    
+    if(baixa == undefined){
+        var data = "";
+    }else{
+        var data = util.formatDataBR(new Date())
+    }
 
     const filter = { _id: id };
-    const query = { assinatura_baixa: dados, status: status };
+    const query = { assinatura_baixa: dados, status: status, dta_baixa: data };
+    
     con.solicitacao.findOneAndUpdate(filter, query, { upsert: true }, function (err, doc) {
         if (err) {
             console.log(err.message);
@@ -644,6 +651,11 @@ app.post('/gestao', (req, res) => {
                 if (dif >= 0 && dif <= 2) {
                     status_soli = "PENDENTE";
                 }
+
+                if(val.dta_baixa != ""){
+                    status_soli = "REALIZADO";
+                }
+
                 return {
                     id: val._id,
                     nome: val.nome,

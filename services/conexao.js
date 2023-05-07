@@ -51,7 +51,8 @@ table = new Schema({
     placa:String,
     dta_solicitacao: String,
     hora_solicitacao: String,
-    assinatura_baixa: String
+    assinatura_baixa: String,
+    dta_baixa: String
 
 },{collection:'solicitacao'});
 
