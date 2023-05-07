@@ -74,7 +74,7 @@
             color: #fff;
         }
 
-        .container-home .filter{
+        .container-home .filter {
             padding-top: 5px;
         }
 
@@ -83,7 +83,8 @@
             font-weight: bold;
         }
 
-        .container-home .filter select, .container-home .filter input {
+        .container-home .filter select,
+        .container-home .filter input {
             font-size: 16px;
         }
 
@@ -109,11 +110,18 @@
         }
 
         /*Table*/
+        .solicitacoes {
+            height: 300px;
+            overflow-y: auto;
+            /*background-color: #3e8e41;*/
+        }
+
         #lista {
             border-collapse: collapse;
             width: 100%;
             margin-bottom: 20px;
             border-color: rgb(220, 220, 220);
+
         }
 
         #lista tr th {
@@ -361,7 +369,7 @@
 
 
                         <div class="solicitacoes">
-                            <table border="1" cellpadding='0' cellspacing='0' id="lista">
+                            <table border="1" cellpadding='0' cellspacing='0' id="lista" class="lista">
                                 <tr>
                                     <th>nome</th>
                                     <th>CPF/CNPJ</th>
@@ -370,7 +378,9 @@
                                     <th>STATUS</th>
                                     <th></th>
                                 </tr>
+                                <div class="listagem"></div>
                                 <%for(let i=0; i < list.length; i++){%>
+
                                     <tr class="dados">
                                         <td>
                                             <%= list[i].nome %>
@@ -398,10 +408,11 @@
                                             <%}%>
                                     </tr>
                                     <%}%>
-
-                            </table>
                         </div>
+
+                        </table>
                     </div>
+                </div>
                 </div>
     </body>
 

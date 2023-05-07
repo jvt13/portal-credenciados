@@ -573,6 +573,11 @@ app.get('/gestao', (req, res) => {
             if (dif >= 0 && dif <= 2) {
                 status_soli = "PENDENTE";
             }
+
+            if(val.dta_baixa != ""){
+                status_soli = "REALIZADO";
+            }
+
             return {
                 id: val._id,
                 nome: val.nome,
@@ -596,7 +601,7 @@ app.post('/gestao/update', (req, res) => {
     var status = req.body.status;
     var baixa = req.body.baixa;
     
-    if(baixa == undefined){
+    if(baixa == ""){
         var data = "";
     }else{
         var data = util.formatDataBR(new Date())
