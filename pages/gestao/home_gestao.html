@@ -244,29 +244,41 @@
             console.log("Leng:" + value.length);
         }
 
-        function atualizaTabela() {
+        async function trataFilter() {/*ajustar*/
             var filter = document.getElementById('select_status').value;
+            try {
+                const response = await fetch('/gestao/select', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dados: undefined, id: undefined, status: undefined, baixa: undefined, filter: filter })
+                });
 
-            fetch('/gestao', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ filter: filter })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    var tabela = document.getElementById('lista');
-                    tabela.innerHTML = '<tr><th>NOME</th><th>CPF/CNPJ</th><th>DATA DA SOLICITAÇÃO</th><th>PRAZO</th><th>STATUS</th><th></th></tr>';
+                const { success, data, error } = await response.json();
 
-                    for (let i = 0; i < data.list.length; i++) {
-                        tabela.innerHTML += "<tr class=\"dados\"><td>" + data.list[i].nome + "</td><td>" + data.list[i].cpf + "</td><td>" + data.list[i].dta_solicitacao + "</td><td>"
-                            + data.list[i].dta_limite + "</td><td>" + data.list[i].status1 + "</td>"
-                            + `<td><button onclick="openModal('modal-opcao-baixa','','','container-home','${data.list[i].id}', '${data.list[i].nome}', '${data.list[i].status}')">Validar</button></td></tr>`
-                    }
+                if (success) {
+                    atualizaTabela(data)
                     manterAlgunsCSS();
-                    verificarStatusTable();
+                } else {
+                    console.error(error);
                 }
-                )
-                .catch(error => console.error(error));
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function atualizaTabela(data) {
+            var filter = document.getElementById('select_status').value;
+            var tabela = document.getElementById('lista');
+
+            tabela.innerHTML = '<tr><th>NOME</th><th>CPF/CNPJ</th><th>DATA DA SOLICITAÇÃO</th><th>PRAZO</th><th>STATUS</th><th></th></tr>';
+
+            for (let i = 0; i < data.length; i++) {
+                tabela.innerHTML += "<tr class=\"dados\"><td>" + data[i].nome + "</td><td>" + data[i].cpf + "</td><td>" + data[i].dta_solicitacao + "</td><td>"
+                    + data[i].dta_limite + "</td><td>" + data[i].status1 + "</td>"
+                    + `<td><button onclick="openModal('modal-opcao-baixa','','','container-home','${data[i].id}', '${data[i].nome}', '${data[i].status}')">Validar</button></td></tr>`
+            }
+            manterAlgunsCSS();
+            verificarStatusTable();
 
         }
 
@@ -301,42 +313,54 @@
             }
         }
 
-        function trataBtnStatus() {
-            const xhr = new XMLHttpRequest();
+        async function trataBtnStatus() {
+            /*const xhr = new XMLHttpRequest();
             xhr.open("POST", "/gestao/update", true);
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify({ id: id_objeto, status: 'PENDENTE', baixa: '', dados: '' }))
+            xhr.send(JSON.stringify({ id: id_objeto, status: 'PENDENTE', baixa: '', dados: '' }))*/
+            /*setTimeout(function () {atualizaTabela();}, 100);*/
+            var filter = document.getElementById('select_status').value;
+            try {
+                const response = await fetch('/gestao/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dados: '', id: id_objeto, status: 'PENDENTE', baixa: '', filter: filter })
+                });
 
-            setTimeout(function () {
-                atualizaTabela();
-            }, 100);
+                const { success, data, error } = await response.json();
+                if (success) {
+                    atualizaTabela(data)
+                } else {
+                    console.error(error);
+                }
+            } catch (error) {
+                console.error(error);
+            }
             closeModal('modal-opcao-baixa', 'container-home');
         }
 
         //setInterval(atualizarTabela, 5000); // atualizar a cada 5 segundos, por exemplo
 
-        function sendPost(id) {
-            var filter = document.getElementById('filter');
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/gestao/update", true);
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify({ dados: document.getElementById('dados-assinatura').value, id: id, status: 'REALIZADO', baixa: 'baixa' }));
+        async function postUpdate(id) {
+            var filter = document.getElementById('select_status').value;
+            try {
+                const response = await fetch('/gestao/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dados: document.getElementById('dados-assinatura').value, id: id, status: 'REALIZADO', baixa: 'baixa', filter: filter })
+                });
 
-            xhr.onload = function () {
-                if (xhr.status === 200) { // Verifica se o status da resposta é 200 (OK)
-                    console.log(xhr.response); // Exibe o response da solicitação HTTP
+                const { success, data, error } = await response.json();
+                if (success) {
+                    atualizaTabela(data)
                 } else {
-                    console.log('Erro ao buscar dados.'); // Exibe uma mensagem de erro se o status da resposta não for 200 (OK)
+                    console.error(error);
                 }
-            };
-            xhr.onerror = function () {
-                console.log('Erro na solicitação.'); // Exibe uma mensagem de erro se ocorrer um erro na solicitação HTTP
-            };
-
-            setTimeout(function () {
-                atualizaTabela();
-            }, 100);
+            } catch (error) {
+                console.error(error);
+            }
         }
+
 
         function sendGet() {
             const xhr = new XMLHttpRequest();
@@ -357,7 +381,7 @@
                     <div class="center">
                         <div class="filter">
                             <label>STATUS:</label>
-                            <select id="select_status" onchange="atualizaTabela()">
+                            <select id="select_status" onchange="trataFilter()">
                                 <option></option>
                                 <option>REALIZADO</option>
                                 <option selected>PENDENTE</option>

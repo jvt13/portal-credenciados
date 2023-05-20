@@ -574,7 +574,7 @@ app.get('/gestao', (req, res) => {
                 status_soli = "PENDENTE";
             }
 
-            if(val.dta_baixa != ""){
+            if (val.dta_baixa != "") {
                 status_soli = "REALIZADO";
             }
 
@@ -594,22 +594,22 @@ app.get('/gestao', (req, res) => {
 
 });
 
-app.post('/gestao/update', (req, res) => {
+app.post('/gestao/update22', (req, res) => {
     console.log("Valor do POST: " + req.body.id);
     var id = req.body.id;
     var dados = req.body.dados;
     var status = req.body.status;
     var baixa = req.body.baixa;
-    
-    if(baixa == ""){
+
+    if (baixa == "") {
         var data = "";
-    }else{
+    } else {
         var data = util.formatDataBR(new Date())
     }
 
     const filter = { _id: id };
     const query = { assinatura_baixa: dados, status: status, dta_baixa: data };
-    
+
     con.solicitacao.findOneAndUpdate(filter, query, { upsert: true }, function (err, doc) {
         if (err) {
             console.log(err.message);
@@ -619,6 +619,175 @@ app.post('/gestao/update', (req, res) => {
             //return res.redirect('/');
         }
     });
+});
+
+app.post('/gestao/select', async (req, res) => {
+    console.log("Valor do POST: " + req.body.id);
+    var id = req.body.id;
+    var dados = req.body.dados;
+    var status = req.body.status;
+    var baixa = req.body.baixa;
+
+    const filter2 = { _id: id };
+    //const query = { assinatura_baixa: dados, status: status, dta_baixa: data };
+    var filter = { status: req.body.filter }
+
+    console.log("|" + filter.status + "|");
+    if (filter.status == "") {
+        filter = {};
+    }
+    if (filter != undefined) {
+        req.session.status = filter;
+        //var filter = { status: status };
+    } else {
+        status = req.session.status;
+        if (status != undefined) {
+            //filter = { status: status };
+        } else {
+            //filter = { status: "PENDENTE" };
+        }
+    }
+
+
+    try {
+        var dta_atual = util.dataAtualFormatada();
+        const list = await con.solicitacao.find(filter);
+        console.log("select");
+        if (list) {
+            var list2 = await list.map(function (val) {
+                var dta_atual = util.dataAtualFormatada();
+                var calc_dta_limite = util.retDtaLimite(val.dta_solicitacao, 2);
+                var dif = util.calculaDiferenca(val.dta_solicitacao, dta_atual)
+                //console.log("Dif: " + dif)
+                var status_soli = "";
+
+                if (dif > 2) {
+                    status_soli = "ATRASADO";
+                }
+                if (dif >= 0 && dif <= 2) {
+                    status_soli = "PENDENTE";
+                }
+
+                if (val.dta_baixa != "") {
+                    status_soli = "REALIZADO";
+                }
+
+                return {
+                    id: val._id,
+                    nome: val.nome,
+                    cpf: val.cpf,
+                    dta_solicitacao: val.dta_solicitacao,
+                    dta_limite: calc_dta_limite,
+                    status: val.status,
+                    status1: status_soli,
+                    status2: val.status2
+                }
+            }
+            );
+            res.json({ success: true, data: await list2 });
+        }
+
+
+
+        //var dta_atual = util.dataAtualFormatada();
+        //var calc_dta_limite = util.retDtaLimite(val.dta_solicitacao, 2);
+        //var dif = util.calculaDiferenca(val.dta_solicitacao, dta_atual)
+
+
+    } catch (err) {
+        console.error(err);
+    }
+})
+
+app.post('/gestao/update', async (req, res) => {
+    console.log("Valor do POST: " + req.body.id);
+    var id = req.body.id;
+    var dados = req.body.dados;
+    var status = req.body.status;
+    var baixa = req.body.baixa;
+
+    if (baixa == "") {
+        var data = "";
+    } else {
+        var data = util.formatDataBR(new Date());
+    }
+
+    const filter2 = { _id: id };
+    const query = { assinatura_baixa: dados, status: status, dta_baixa: data };
+
+    try {
+        try {
+            const update = await con.solicitacao.findByIdAndUpdate(filter2, query, { new: true });
+            if (update) {
+                console.log("update: "+ query);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+
+        var filter = { status: req.body.filter };
+        console.log("Filtro:" + filter.status);
+
+        if (filter.status == "") {
+            filter = {};
+        }
+        if (filter != undefined) {
+            req.session.status = filter;
+            //var filter = { status: status };
+        } else {
+            status = req.session.status;
+            if (status != undefined) {
+                //filter = { status: status };
+            } else {
+                //filter = { status: "PENDENTE" };
+            }
+        }
+
+        if (baixa == "") {
+            var data = "";
+        } else {
+            var data = util.formatDataBR(new Date())
+        }
+
+        const list = await con.solicitacao.find(filter);
+        console.log("select");
+        if (list) {
+            var list2 = await list.map(function (val) {
+                var dta_atual = util.dataAtualFormatada();
+                var calc_dta_limite = util.retDtaLimite(val.dta_solicitacao, 2);
+                var dif = util.calculaDiferenca(val.dta_solicitacao, dta_atual)
+                //console.log("Dif: " + dif)
+                var status_soli = "";
+
+                if (dif > 2) {
+                    status_soli = "ATRASADO";
+                }
+                if (dif >= 0 && dif <= 2) {
+                    status_soli = "PENDENTE";
+                }
+
+                if (val.dta_baixa != "") {
+                    status_soli = "REALIZADO";
+                }
+
+                return {
+                    id: val._id,
+                    nome: val.nome,
+                    cpf: val.cpf,
+                    dta_solicitacao: val.dta_solicitacao,
+                    dta_limite: calc_dta_limite,
+                    status: val.status,
+                    status1: status_soli,
+                    status2: val.status2
+                }
+            }
+            );
+        }
+        res.json({ success: true, data: await list2 });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, err: err.message });
+    }
 });
 
 app.post('/gestao', (req, res) => {
@@ -657,7 +826,7 @@ app.post('/gestao', (req, res) => {
                     status_soli = "PENDENTE";
                 }
 
-                if(val.dta_baixa != ""){
+                if (val.dta_baixa != "") {
                     status_soli = "REALIZADO";
                 }
 
