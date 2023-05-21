@@ -113,15 +113,20 @@
         .solicitacoes {
             height: 300px;
             overflow-y: auto;
-            /*background-color: #3e8e41;*/
         }
 
         #lista {
-            border-collapse: collapse;
+            /*border-collapse: collapse;*/
             width: 100%;
             margin-bottom: 20px;
-            border-color: rgb(220, 220, 220);
+            border-color: rgb(255, 255, 255);
+            border-top: 0px;
 
+        }
+
+        #lista thead {
+            position: sticky;
+            top: 0;
         }
 
         #lista tr th {
@@ -130,6 +135,12 @@
             text-transform: uppercase;
             text-align: center;
             height: 30px;
+        }
+
+        #lista .dados tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
         }
 
         #lista .dados td:first-child {
@@ -149,10 +160,6 @@
             height: 35px;
         }*/
 
-        #lista .dados tr:hover {
-            background-color: #ccc;
-            /* define a cor de fundo para quando o mouse estiver sobre a linha */
-        }
 
         #lista .dados td {
             min-width: 60px;
@@ -170,6 +177,10 @@
 
         #lista tr:nth-child(odd) {
             background-color: #e5e5e5;
+        }
+
+        #lista tbody tr:hover {
+            font-weight: bold;
         }
 
         #lista button {
@@ -361,13 +372,6 @@
             }
         }
 
-
-        function sendGet() {
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", "/gestao2", true);
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify({ data: document.getElementById('dados-assinatura').value }));
-        }
     </script>
 
     <script src=""></script>
@@ -394,44 +398,48 @@
 
                         <div class="solicitacoes">
                             <table border="1" cellpadding='0' cellspacing='0' id="lista" class="lista">
-                                <tr>
-                                    <th>nome</th>
-                                    <th>CPF/CNPJ</th>
-                                    <th>DATA DA SOLICITAÇÃO</th>
-                                    <th>PRAZO</th>
-                                    <th>STATUS</th>
-                                    <th></th>
-                                </tr>
-                                <div class="listagem"></div>
-                                <%for(let i=0; i < list.length; i++){%>
-
-                                    <tr class="dados">
-                                        <td>
-                                            <%= list[i].nome %>
-                                        </td>
-                                        <td>
-                                            <%= list[i].cpf %>
-                                        </td>
-                                        <td>
-                                            <%= list[i].dta_solicitacao %>
-                                        </td>
-                                        <td>
-                                            <%= list[i].dta_limite %>
-                                        </td>
-                                        <td>
-                                            <%= list[i].status1 %>
-                                        </td>
-
-                                        <%if(list[i].status !="REALIZADO" ){ %>
-                                            <td>
-                                                <!--<input type="button" value="Validar"
-                                            onclick="openModal('dv-modal','assinatura', 'dados-assinatura', 'container-home', '<%= list[i].id %>')" />-->
-                                                <button id="btn_validar"
-                                                    onclick="openModal('modal-opcao-baixa','','','container-home','<%= list[i].id %>','<%= list[i].nome %>', '<%= list[i].status %>')">Validar</button>
-                                            </td>
-                                            <%}%>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 30%;">nome</th>
+                                        <th>CPF/CNPJ</th>
+                                        <th style="width: 30px;">DATA DA SOLICITAÇÃO</th>
+                                        <th>PRAZO</th>
+                                        <th>STATUS</th>
+                                        <th></th>
                                     </tr>
-                                    <%}%>
+                                </thead>
+                                <tbody>
+                                    <!--<div class="listagem">-->
+                                    <%for(let i=0; i < list.length; i++){%>
+                                        <tr class="dados">
+                                            <td>
+                                                <%= list[i].nome %>
+                                            </td>
+                                            <td>
+                                                <%= list[i].cpf %>
+                                            </td>
+                                            <td>
+                                                <%= list[i].dta_solicitacao %>
+                                            </td>
+                                            <td>
+                                                <%= list[i].dta_limite %>
+                                            </td>
+                                            <td>
+                                                <%= list[i].status1 %>
+                                            </td>
+
+                                            <%if(list[i].status !="REALIZADO" ){ %>
+                                                <td>
+                                                    <!--<input type="button" value="Validar"
+                                            onclick="openModal('dv-modal','assinatura', 'dados-assinatura', 'container-home', '<%= list[i].id %>')" />-->
+                                                    <button id="btn_validar"
+                                                        onclick="openModal('modal-opcao-baixa','','','container-home','<%= list[i].id %>','<%= list[i].nome %>', '<%= list[i].status %>')">Validar</button>
+                                                </td>
+                                                <%}%>
+                                        </tr>
+                                        <%}%>
+                                            <!--</div>-->
+                                </tbody>
                         </div>
 
                         </table>
