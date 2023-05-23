@@ -15,7 +15,7 @@
             background-color: #c0c0c0;
             margin-top: 10px;
             width: 70%;
-            height: 80%;
+            height: 90%;
             display: block;
         }
 
@@ -354,6 +354,9 @@
 
         async function postUpdate(id) {
             var filter = document.getElementById('select_status').value;
+            var loading = document.getElementById('modal-loading');
+
+            loading.style.display = 'block';
             try {
                 const response = await fetch('/gestao/update', {
                     method: 'POST',
@@ -363,7 +366,8 @@
 
                 const { success, data, error } = await response.json();
                 if (success) {
-                    atualizaTabela(data)
+                    atualizaTabela(data);
+                    loading.style.display = 'none';
                 } else {
                     console.error(error);
                 }
@@ -378,6 +382,7 @@
 
     <body>
 
+        <%- include('../partials/modal/modal-loading.html') %>
         <%- include('../partials/modal/modal-baixa.html') %>
             <%- include('../partials/modal/modal-assinatura.html') %>
 
@@ -405,7 +410,9 @@
                                         <th style="width: 30px;">DATA DA SOLICITAÇÃO</th>
                                         <th>PRAZO</th>
                                         <th>STATUS</th>
-                                        <th></th>
+                                        <th style="width-min: 5%;">VER</th>
+                                        <th style="width-min: 5%;">EDITAR</th>
+                                        <th style="width-min: 5%;">DAR BAIXA</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -430,10 +437,24 @@
 
                                             <%if(list[i].status !="REALIZADO" ){ %>
                                                 <td>
-                                                    <!--<input type="button" value="Validar"
-                                            onclick="openModal('dv-modal','assinatura', 'dados-assinatura', 'container-home', '<%= list[i].id %>')" />-->
-                                                    <button id="btn_validar"
-                                                        onclick="openModal('modal-opcao-baixa','','','container-home','<%= list[i].id %>','<%= list[i].nome %>', '<%= list[i].status %>')">Validar</button>
+                                                    <button id="btn_validar"><img style="width: 20px; height: 20px;"
+                                                        src="../../public/images/view.png"
+                                                        onclick=""/>
+                                                    </button>
+                                                </td>
+
+                                                <td>
+                                                    <button id="btn_validar"><img
+                                                            style="width: 20px; height: 22px;"
+                                                            src="../../public/images/edit.png"
+                                                            onclick="" /></button>
+                                                </td>
+
+                                                <td>
+                                                    <button id="btn_validar"><img style="width: 20px; height: 20px;"
+                                                        src="../../public/images/baixa.png"
+                                                        onclick="openModal('modal-opcao-baixa','','','container-home','<%= list[i].id %>','<%= list[i].nome %>', '<%= list[i].status %>')"/>
+                                                    </button>
                                                 </td>
                                                 <%}%>
                                         </tr>
