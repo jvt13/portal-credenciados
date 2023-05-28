@@ -218,13 +218,17 @@
                 height: 100%;
             }
 
-            .solicitacoes{
+            .container-home .center{
+                width: 95%;
+            }
+
+            .solicitacoes {
                 width: 100%;
                 height: 80%;
             }
 
             #lista th {
-                font-size: 0.8rem;
+                font-size: 0.6rem;
             }
 
             #lista .dados td {
@@ -243,7 +247,6 @@
             }
         }
     </style>
-
 
     <script language=javascript type="text/javascript">
 
@@ -286,12 +289,29 @@
             var filter = document.getElementById('select_status').value;
             var tabela = document.getElementById('lista');
 
-            tabela.innerHTML = '<tr><th>NOME</th><th>CPF/CNPJ</th><th>DATA DA SOLICITAÇÃO</th><th>PRAZO</th><th>STATUS</th><th></th></tr>';
+            tabela.innerHTML = '<tr><th style="width: 30%";>NOME</th><th style="width: 30%";>CPF/CNPJ</th><th style="width: 5%";>DATA DA SOLICITAÇÃO</th><th style="width: 5%";>PRAZO</th><th style="width: 5%";>STATUS</th><th style="width: 5%";>VER</th><th style="width: 5%";>EDITAR</th><th style="width: 5%";>TRATAR</th></tr>';
 
             for (let i = 0; i < data.length; i++) {
-                tabela.innerHTML += "<tr class=\"dados\"><td>" + data[i].nome + "</td><td>" + data[i].cpf + "</td><td>" + data[i].dta_solicitacao + "</td><td>"
-                    + data[i].dta_limite + "</td><td>" + data[i].status1 + "</td>"
-                    + `<td><button onclick="openModal('modal-opcao-baixa','','','container-home','${data[i].id}', '${data[i].nome}', '${data[i].status}')">Validar</button></td></tr>`
+                if (data[i].status1 == "REALIZADO") {
+                    tabela.innerHTML += "<tr class=\"dados\"><td>" + data[i].nome + "</td><td>" + data[i].cpf + "</td><td>" + data[i].dta_solicitacao + "</td><td>"
+                        + data[i].dta_limite + "</td><td>" + data[i].status1 + "</td>"
+                        + `<td><button >
+                        <img style="width: 20px; height: 20px;" src="../../public/images/view.png" onclick=""/></button></td>`
+                        + `<td><button >
+                        <img style="width: 20px; height: 20px;" src="../../public/images/edit.png" onclick=""/></button></td>`
+                        + `<td><button >
+                        <img style="width: 20px; height: 20px;" src="../../public/images/reverter.png" onclick="openModal('modal-opcao-baixa','','','container-home','${data[i].id}', '${data[i].nome}', '${data[i].status}')"/></button></td></tr>`
+                } else {
+                    tabela.innerHTML += "<tr class=\"dados\"><td>" + data[i].nome + "</td><td>" + data[i].cpf + "</td><td>" + data[i].dta_solicitacao + "</td><td>"
+                        + data[i].dta_limite + "</td><td>" + data[i].status1 + "</td>"
+                        + `<td><button >
+                        <img style="width: 20px; height: 20px;" src="../../public/images/view.png" onclick=""/></button></td>`
+                        + `<td><button >
+                        <img style="width: 20px; height: 20px;" src="../../public/images/edit.png" onclick=""/></button></td>`
+                        + `<td><button >
+                        <img style="width: 20px; height: 20px;" src="../../public/images/baixa.png" onclick="openModal('modal-opcao-baixa','','','container-home','${data[i].id}', '${data[i].nome}', '${data[i].status}')"/></button></td></tr>`
+                }
+
             }
             manterAlgunsCSS();
             verificarStatusTable();
@@ -335,8 +355,10 @@
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.send(JSON.stringify({ id: id_objeto, status: 'PENDENTE', baixa: '', dados: '' }))*/
             /*setTimeout(function () {atualizaTabela();}, 100);*/
+            var loading = document.getElementById('modal-loading');
             var filter = document.getElementById('select_status').value;
             try {
+                loading.style.display = 'flex';
                 const response = await fetch('/gestao/update', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -352,6 +374,7 @@
             } catch (error) {
                 console.error(error);
             }
+            loading.style.display = 'none';
             closeModal('modal-opcao-baixa', 'container-home');
         }
 
@@ -361,7 +384,8 @@
             var filter = document.getElementById('select_status').value;
             var loading = document.getElementById('modal-loading');
 
-            loading.style.display = 'block';
+            loading.style.display = 'flex';
+
             try {
                 const response = await fetch('/gestao/update', {
                     method: 'POST',
@@ -372,13 +396,13 @@
                 const { success, data, error } = await response.json();
                 if (success) {
                     atualizaTabela(data);
-                    loading.style.display = 'none';
                 } else {
                     console.error(error);
                 }
             } catch (error) {
                 console.error(error);
             }
+            loading.style.display = 'none';
         }
 
     </script>
@@ -388,90 +412,88 @@
     <body>
 
         <%- include('../partials/modal/modal-loading.html') %>
-        <%- include('../partials/modal/modal-baixa.html') %>
-            <%- include('../partials/modal/modal-assinatura.html') %>
+            <%- include('../partials/modal/modal-baixa.html') %>
+                <%- include('../partials/modal/modal-assinatura.html') %>
 
-                <div id="container-home" class="container-home">
-                    <div class="center">
-                        <div class="filter">
-                            <label>STATUS:</label>
-                            <select id="select_status" onchange="trataFilter()">
-                                <option></option>
-                                <option>REALIZADO</option>
-                                <option selected>PENDENTE</option>
-                            </select>
+                    <div id="container-home" class="container-home">
+                        <div class="center">
+                            <div class="filter">
+                                <label>STATUS:</label>
+                                <select id="select_status" onchange="trataFilter()">
+                                    <option></option>
+                                    <option>REALIZADO</option>
+                                    <option selected>PENDENTE</option>
+                                </select>
 
-                            <!--<label>CPF:</label>
+                                <!--<label>CPF:</label>
                             <input type="text" />-->
-                        </div><br>
+                            </div><br>
 
 
-                        <div class="solicitacoes">
-                            <table border="1" cellpadding='0' cellspacing='0' id="lista" class="lista">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 30%;">nome</th>
-                                        <th>CPF/CNPJ</th>
-                                        <th style="width: 30px;">DATA DA SOLICITAÇÃO</th>
-                                        <th>PRAZO</th>
-                                        <th>STATUS</th>
-                                        <th style="width-min: 5%;">VER</th>
-                                        <th style="width-min: 5%;">EDITAR</th>
-                                        <th style="width-min: 5%;">DAR BAIXA</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!--<div class="listagem">-->
-                                    <%for(let i=0; i < list.length; i++){%>
-                                        <tr class="dados">
-                                            <td>
-                                                <%= list[i].nome %>
-                                            </td>
-                                            <td>
-                                                <%= list[i].cpf %>
-                                            </td>
-                                            <td>
-                                                <%= list[i].dta_solicitacao %>
-                                            </td>
-                                            <td>
-                                                <%= list[i].dta_limite %>
-                                            </td>
-                                            <td>
-                                                <%= list[i].status1 %>
-                                            </td>
-
-                                            <%if(list[i].status !="REALIZADO" ){ %>
-                                                <td>
-                                                    <button id="btn_validar"><img style="width: 20px; height: 20px;"
-                                                        src="../../public/images/view.png"
-                                                        onclick=""/>
-                                                    </button>
-                                                </td>
-
-                                                <td>
-                                                    <button id="btn_validar"><img
-                                                            style="width: 20px; height: 22px;"
-                                                            src="../../public/images/edit.png"
-                                                            onclick="" /></button>
-                                                </td>
-
-                                                <td>
-                                                    <button id="btn_validar"><img style="width: 20px; height: 20px;"
-                                                        src="../../public/images/baixa.png"
-                                                        onclick="openModal('modal-opcao-baixa','','','container-home','<%= list[i].id %>','<%= list[i].nome %>', '<%= list[i].status %>')"/>
-                                                    </button>
-                                                </td>
-                                                <%}%>
+                            <div class="solicitacoes">
+                                <table border="1" cellpadding='0' cellspacing='0' id="lista" class="lista">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 30%;">nome</th>
+                                            <th>CPF/CNPJ</th>
+                                            <th style="width: 30px;">DATA DA SOLICITAÇÃO</th>
+                                            <th>PRAZO</th>
+                                            <th>STATUS</th>
+                                            <th style="width-min: 5%;">VER</th>
+                                            <th style="width-min: 5%;">EDITAR</th>
+                                            <th style="width-min: 5%;">TRATAR</th>
                                         </tr>
-                                        <%}%>
-                                            <!--</div>-->
-                                </tbody>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        <!--<div class="listagem">-->
+                                        <%for(let i=0; i < list.length; i++){%>
+                                            <tr class="dados">
+                                                <td>
+                                                    <%= list[i].nome %>
+                                                </td>
+                                                <td>
+                                                    <%= list[i].cpf %>
+                                                </td>
+                                                <td>
+                                                    <%= list[i].dta_solicitacao %>
+                                                </td>
+                                                <td>
+                                                    <%= list[i].dta_limite %>
+                                                </td>
+                                                <td>
+                                                    <%= list[i].status1 %>
+                                                </td>
 
-                        </table>
+                                                <%if(list[i].status !="REALIZADO" ){ %>
+                                                    <td>
+                                                        <button id="btn_validar"><img style="width: 20px; height: 20px;"
+                                                                src="../../public/images/view.png" onclick="" />
+                                                        </button>
+                                                    </td>
+
+                                                    <td>
+                                                        <button id="btn_validar"><img style="width: 20px; height: 22px;"
+                                                                src="../../public/images/edit.png"
+                                                                onclick="" /></button>
+                                                    </td>
+
+                                                    <td>
+                                                        <button id="btn_validar"><img style="width: 20px; height: 20px;"
+                                                                src="../../public/images/baixa.png"
+                                                                onclick="openModal('modal-opcao-baixa','','','container-home','<%= list[i].id %>','<%= list[i].nome %>', '<%= list[i].status %>')" />
+                                                        </button>
+                                                    </td>
+                                                    <%}%>
+                                            </tr>
+                                            <%}%>
+                                                <!--</div>-->
+                                    </tbody>
+                            </div>
+
+                            </table>
+                        </div>
                     </div>
-                </div>
-                </div>
+                    </div>
     </body>
 
     <script>

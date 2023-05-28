@@ -1,14 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
 <style>
-    .modal-center {
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        min-height: 100vh;
-        transform: scale(5);
+    /* CSS */
+    .modal-loading {
+        background-color: rgb(0, 0, 0, .8);
+        /*position: fixed;*/
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
         display: none;
+
+        align-items: center;
+        /*display: flex;*/
+        justify-content: center;
+        /*min-height: 100vh;*/
+        transform: scale(5);
+        overflow: hidden;
     }
 
-    .modal-center .modal-loading {
+    .modal-loading .loading {
         animation: is-rotating 1s infinite;
         border: 6px solid #e5e5e5;
         border-radius: 50%;
@@ -17,14 +35,35 @@
         width: 50px;
     }
 
+    .modal-loading .loading.paused {
+        animation-play-state: paused;
+    }
+
     @keyframes is-rotating {
         to {
             transform: rotate(1turn);
         }
     }
 </style>
-<div class="modal-center">
-    <div class="modal-loading" id="modal-loading"></div>
-</div>
 
-</div>
+<body>
+
+    <div class="modal-loading" id="modal-loading">
+        <div class="loading" id="loading"></div>
+    </div>
+
+    <!--<button id="pauseButton">Parar Animação</button>-->
+
+</body>
+<script>
+    //setInterval(alert("dfd"), 500); // atualizar a cada 5 segundos, por exemplo
+    var pauseButton = document.getElementById('pauseButton');
+    var loading = document.getElementById('loading');
+
+    pauseButton.addEventListener('click', function (event) {
+
+        modalLoading.classList.toggle('paused');
+    });
+</script>
+
+</html>
