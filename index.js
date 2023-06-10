@@ -633,7 +633,7 @@ app.post('/gestao/select', async (req, res) => {
     var filter = { status: req.body.filter }
 
     console.log("|" + filter.status + "|");
-    if (filter.status == "") {
+    if (filter.status == "TODOS") {
         filter = {};
     }
     if (filter != undefined) {
@@ -728,7 +728,7 @@ app.post('/gestao/update', async (req, res) => {
         var filter = { status: req.body.filter };
         console.log("Filtro:" + filter.status);
 
-        if (filter.status == "") {
+        if (filter.status == "TODOS") {
             filter = {};
         }
         if (filter != undefined) {

@@ -361,8 +361,11 @@
             /*setTimeout(function () {atualizaTabela();}, 100);*/
             var loading = document.getElementById('modal-loading');
             var filter = document.getElementById('select_status').value;
+            var modal_baixa = document.getElementById('modal-baixa');
+
             try {
                 loading.style.display = 'flex';
+                closeModal('modal-opcao-baixa', 'container-home');
                 const response = await fetch('/gestao/update', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -379,7 +382,7 @@
                 console.error(error);
             }
             loading.style.display = 'none';
-            closeModal('modal-opcao-baixa', 'container-home');
+            
         }
 
         //setInterval(atualizarTabela, 5000); // atualizar a cada 5 segundos, por exemplo
@@ -424,7 +427,7 @@
                             <div class="filter">
                                 <label>STATUS:</label>
                                 <select id="select_status" onchange="trataFilter()">
-                                    <option></option>
+                                    <option>TODOS</option>
                                     <option>REALIZADO</option>
                                     <option selected>PENDENTE</option>
                                 </select>
