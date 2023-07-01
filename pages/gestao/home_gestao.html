@@ -218,7 +218,7 @@
                 height: 100%;
             }
 
-            .container-home .center{
+            .container-home .center {
                 width: 100%;
             }
 
@@ -227,7 +227,7 @@
                 height: 80%;
             }
 
-            #lista{
+            #lista {
                 width: 100%;
             }
 
@@ -270,6 +270,16 @@
         async function trataFilter() {/*ajustar*/
             var filter = document.getElementById('select_status').value;
             try {
+                const data = await getDadosBD(filter);
+                atualizaTabela(data)
+                manterAlgunsCSS();
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function getDadosBD(filter) {
+            try {
                 const response = await fetch('/gestao/select', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -279,8 +289,29 @@
                 const { success, data, error } = await response.json();
 
                 if (success) {
-                    atualizaTabela(data)
-                    manterAlgunsCSS();
+                    return data;
+                } else {
+                    console.error(error);
+                }
+            } catch (error) {
+                console.error(error);
+
+            }
+        }
+
+        async function gerenciadorAlteracao() {
+            try {
+                const response = await fetch('/gestao/acionador', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                const { success, data, error } = await response.json();
+
+                if (success) {
+                    if(data.length > 0){
+                        trataFilter();
+                    }
                 } else {
                     console.error(error);
                 }
@@ -288,6 +319,8 @@
                 console.error(error);
             }
         }
+
+        setInterval(gerenciadorAlteracao, 10000); // atualizar a cada 5 segundos, por exemplo
 
         function atualizaTabela(data) {
             var filter = document.getElementById('select_status').value;
@@ -382,10 +415,8 @@
                 console.error(error);
             }
             loading.style.display = 'none';
-            
-        }
 
-        //setInterval(atualizarTabela, 5000); // atualizar a cada 5 segundos, por exemplo
+        }
 
         async function postUpdate(id) {
             var filter = document.getElementById('select_status').value;

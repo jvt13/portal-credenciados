@@ -112,4 +112,12 @@ table = new Schema({
 
 var inf_contrato = mongoose.model("inf_contrato", table);
 
-module.exports = { mongoose, lojas, solicitacao, tipo_credencial, uploads, valor_segundavia, inf_segundavia, historico_solicitacao, hist_atualizacao_cred, inf_contrato };
+table = new Schema({
+    tabela: String,
+    data_hora: String
+
+}, { collection: 'acionador' });
+
+var acionador = mongoose.model("acionador", table);
+
+module.exports = { mongoose, lojas, solicitacao, tipo_credencial, uploads, valor_segundavia, inf_segundavia, historico_solicitacao, hist_atualizacao_cred, inf_contrato, acionador };

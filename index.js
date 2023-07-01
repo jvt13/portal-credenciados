@@ -9,6 +9,7 @@ const request = require('request');
 let cep = require('cep-promise');
 const fs = require('fs');
 const pdf = require('html-pdf');
+const acionador = require('./services/acionador.js');
 
 //Banco de dados
 const con = require('./services/conexao');
@@ -556,7 +557,7 @@ app.post('/solicitacao/segundavia', (req, res) => {
 });
 
 //-----Back End-------------------
-app.get('/gestao', (req, res) => {
+app.get('/gestao', async (req, res) => {
     var dta_atual = util.dataAtualFormatada();
 
     var filter = { status: "PENDENTE" };
@@ -685,14 +686,7 @@ app.post('/gestao/select', async (req, res) => {
             }
             );
             res.json({ success: true, data: await list2 });
-        }
-
-
-
-        //var dta_atual = util.dataAtualFormatada();
-        //var calc_dta_limite = util.retDtaLimite(val.dta_solicitacao, 2);
-        //var dif = util.calculaDiferenca(val.dta_solicitacao, dta_atual)
-
+        };
 
     } catch (err) {
         console.error(err);
@@ -719,7 +713,7 @@ app.post('/gestao/update', async (req, res) => {
         try {
             const update = await con.solicitacao.findByIdAndUpdate(filter2, query, { new: true });
             if (update) {
-                console.log("update: "+ query);
+                console.log("update: " + query);
             }
         } catch (err) {
             console.error(err);
@@ -750,7 +744,7 @@ app.post('/gestao/update', async (req, res) => {
         }
 
         const list = await con.solicitacao.find(filter);
-        console.log("select");
+        //console.log("select");
         if (list) {
             var list2 = await list.map(function (val) {
                 var dta_atual = util.dataAtualFormatada();
@@ -784,6 +778,9 @@ app.post('/gestao/update', async (req, res) => {
             );
         }
         res.json({ success: true, data: await list2 });
+        //console.log("Antes do acionador.")
+        //acionador.update("solicitacao");
+        acionador.validador("solicitacao");
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, err: err.message });
@@ -849,11 +846,35 @@ app.post('/gestao', (req, res) => {
     });
 });
 
-function atualizarTabela() {
-    console.log("Teste");
+async function controlaAcionador() {
+
 }
+
+app.post('/gestao/acionador', async (req, res) => {
+    var dta = new Date();
+    var hora_atual, hora_bd;
+
+    var h = dta.getHours();
+    var m = dta.getMinutes();
+    var s = dta.getSeconds();
+
+    hora_atual = h + ":" + m + ":" + s;
+
+    const ret = await acionador.select("solicitacao");
+
+    var cont = ret.length;
+    if (cont > 0 && ret[0].data_hora != "") {
+        console.log("Alteração detectada!" + ret[0].id);
+        acionador.update(ret[0].id, "check");
+
+        res.json({ success: true, data: 1 });
+    } else {
+        res.json({ success: true, data: 0 });
+    }
+});
 
 //----Fim Back End---------------
 app.listen(porta, () => {
     console.log('server rodando na porta ' + porta);
+    //setInterval(controlaAcionador, 10000);
 });
